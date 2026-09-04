@@ -1,5 +1,5 @@
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.replace(/\/$/, '')
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY
 const visitorKey = 'codyssey-analytics-visitor-id'
 const sessionVisitKey = 'codyssey-analytics-session-recorded'
 
@@ -14,12 +14,11 @@ function getVisitorId() {
 }
 
 async function recordEvent(eventType: 'visit' | 'profile_name', displayName?: string) {
-  if (!supabaseUrl || !supabaseAnonKey) return
+  if (!supabaseUrl || !supabasePublishableKey) return
   const response = await fetch(`${supabaseUrl}/rest/v1/codyssey_events`, {
     method: 'POST',
     headers: {
-      apikey: supabaseAnonKey,
-      Authorization: `Bearer ${supabaseAnonKey}`,
+      apikey: supabasePublishableKey,
       'Content-Type': 'application/json',
       Prefer: 'return=minimal',
     },
