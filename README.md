@@ -58,22 +58,6 @@ Solve and review
 
 Codyssey is fully static. It does not require a database, authentication provider, or backend service.
 
-## Run locally
-
-### Requirements
-
-- Node.js 20 or later
-- npm
-
-```powershell
-git clone <your-repository-url>
-Set-Location Codyssey
-npm install
-npm run dev
-```
-
-Open the local URL printed by Vite.
-
 ## Production build
 
 ```powershell
