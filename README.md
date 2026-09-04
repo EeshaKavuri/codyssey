@@ -10,6 +10,10 @@
 
 <br />
 
+### [🚀 Open the Codyssey Learning Portal](https://eeshakavuri.github.io/codyssey/)
+
+<br />
+
 ![12 Weeks](https://img.shields.io/badge/12_Weeks-Self_Paced-FF9F43?style=for-the-badge)
 ![455 Questions](https://img.shields.io/badge/455-DSA_Questions-2ECC71?style=for-the-badge)
 ![60 Patterns](https://img.shields.io/badge/60-Reusable_Patterns-9B59B6?style=for-the-badge)

@@ -51,7 +51,7 @@ From the Supabase project, copy:
 
 Never use a secret or `service_role` key in the website.
 
-In the GitHub repository, open **Settings → Secrets and variables → Actions → Variables** and create:
+In the GitHub repository, open **Settings → Secrets and variables → Actions** and create either repository variables or repository secrets:
 
 | Variable | Value |
 |---|---|
