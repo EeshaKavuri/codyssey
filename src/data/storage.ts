@@ -5,6 +5,9 @@ export const storageKeys = {
   solvedProblems: 'codyssey-solved-problems',
   currentView: 'codyssey-current-view',
   visualWorkspace: 'codyssey-visual-workspace',
+  workspaceWalkthroughSeen: 'codyssey-workspace-walkthrough-seen',
+  websiteWalkthroughSeen: 'codyssey-website-walkthrough-seen-v2',
+  sidebarCollapsed: 'codyssey-sidebar-collapsed',
 } as const
 
 const legacyPrefix = ['algo', 'prep'].join('')
@@ -18,6 +21,9 @@ Object.entries(storageKeys).forEach(([name, key]) => {
     solvedProblems: 'solved-problems',
     currentView: 'current-view',
     visualWorkspace: 'visual-workspace',
+    workspaceWalkthroughSeen: 'workspace-walkthrough-seen',
+    websiteWalkthroughSeen: 'website-walkthrough-seen',
+    sidebarCollapsed: 'sidebar-collapsed',
   }
   const legacyKey = `${legacyPrefix}-${suffixes[name]}`
   const value = localStorage.getItem(legacyKey)

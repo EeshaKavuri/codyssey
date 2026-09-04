@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 
 export type AnimationStep<State> = {
   line: number
@@ -33,12 +33,20 @@ export function AlgorithmPlayer<State>({
   const [index, setIndex] = useState(0)
   const [playing, setPlaying] = useState(false)
   const [speed, setSpeed] = useState(1)
+  const [fullscreen, setFullscreen] = useState(false)
+  const playerRef = useRef<HTMLElement>(null)
   const step = steps[Math.min(index, steps.length - 1)]
 
   useEffect(() => {
     setIndex(0)
     setPlaying(false)
   }, [steps])
+
+  useEffect(() => {
+    const updateFullscreen = () => setFullscreen(document.fullscreenElement === playerRef.current)
+    document.addEventListener('fullscreenchange', updateFullscreen)
+    return () => document.removeEventListener('fullscreenchange', updateFullscreen)
+  }, [])
 
   useEffect(() => {
     if (!playing || index >= steps.length - 1) {
@@ -58,15 +66,26 @@ export function AlgorithmPlayer<State>({
     onProgress?.()
   }
 
+  const toggleFullscreen = async () => {
+    if (!playerRef.current) return
+    if (document.fullscreenElement === playerRef.current) await document.exitFullscreen()
+    else await playerRef.current.requestFullscreen()
+  }
+
   if (!step) return null
 
   return (
-    <section className="algorithm-player">
+    <section className="algorithm-player" ref={playerRef}>
       <header className="player-header">
         <div><span className="live-dot" /> INTERACTIVE TRACE<h2>{title}</h2><p>{subtitle}</p></div>
-        <div className="player-complexity">
-          <span>TIME <b>{complexity.time}</b></span>
-          <span>SPACE <b>{complexity.space}</b></span>
+        <div className="player-header-actions">
+          <div className="player-complexity">
+            <span>TIME <b>{complexity.time}</b></span>
+            <span>SPACE <b>{complexity.space}</b></span>
+          </div>
+          <button className="fullscreen-button" onClick={toggleFullscreen} aria-label={fullscreen ? 'Exit focused mode' : 'Enter focused mode'} title={fullscreen ? 'Exit focused mode' : 'Focused full-screen mode'}>
+            <span>{fullscreen ? '↙' : '↗'}</span>{fullscreen ? 'EXIT FOCUS' : 'FOCUS'}
+          </button>
         </div>
       </header>
 

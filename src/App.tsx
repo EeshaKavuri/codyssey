@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import codysseyLogo from './assets/codyssey-logo.png'
 import { dsaPatterns, type DsaProblem } from './data/dsaProblems'
 import { getPatternBlueprint, getPatternTheory } from './data/dsaTheory'
 import { hldLessons, lldLessons, type DesignLesson } from './data/designCurriculum'
 import { resourceGroups } from './data/resources'
 import { storageKeys } from './data/storage'
+import { recordVisit, recordVisitorName } from './data/analytics'
 import { ArrayVisualizer, LinkedListVisualizer, StackVisualizer, WindowVisualizer } from './components/dsa/DsaVisualizers'
 import {
   BacktrackingVisualizer,
@@ -17,6 +18,9 @@ import {
   TreeVisualizer,
 } from './components/dsa/AdvancedDsaVisualizers'
 import { VisualWorkspace } from './components/dsa/VisualWorkspace'
+import { GuidedTour, type TourStep } from './components/GuidedTour'
+
+const DesignExploreMore = lazy(() => import('./components/DesignExploreMore'))
 
 type View = 'home' | 'roadmap' | 'dsa' | 'hld' | 'lld' | 'workspace' | 'appendix'
 type ModuleId = 'dsa' | 'hld' | 'lld'
@@ -114,11 +118,21 @@ function Icon({ name }: { name: string }) {
   return <span className="icon" aria-hidden="true">{icons[name]}</span>
 }
 
-function Sidebar({ view, setView, completed, selectedWeek }: {
+function ExternalLinkIcon() {
+  return (
+    <svg className="external-link-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+    </svg>
+  )
+}
+
+function Sidebar({ view, setView, completed, selectedWeek, collapsed, toggleCollapsed }: {
   view: View
   setView: (view: View) => void
   completed: CompletionKey[]
   selectedWeek: number
+  collapsed: boolean
+  toggleCollapsed: () => void
 }) {
   const nav: { id: View; label: string; detail: string }[] = [
     { id: 'home', label: 'Overview', detail: 'Bird’s-eye view' },
@@ -132,8 +146,8 @@ function Sidebar({ view, setView, completed, selectedWeek }: {
   const weekProgress = moduleIds.filter((module) => completed.includes(completionKey(selectedWeek, module))).length
 
   return (
-    <aside className="sidebar">
-      <button className="brand" onClick={() => setView('home')}>
+    <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
+      <button className="brand" onClick={() => setView('home')} title={collapsed ? 'Codyssey overview' : undefined}>
         <img className="brand-mark" src={codysseyLogo} alt="Codyssey" />
         <span><strong>Codyssey</strong><small>INTERVIEW STUDIO</small></span>
       </button>
@@ -144,6 +158,8 @@ function Sidebar({ view, setView, completed, selectedWeek }: {
             className={`nav-item ${view === item.id ? 'active' : ''}`}
             key={item.id}
             onClick={() => setView(item.id)}
+            title={collapsed ? `${item.label} — ${item.detail}` : undefined}
+            aria-label={collapsed ? item.label : undefined}
           >
             <Icon name={item.id} />
             <span><strong>{item.label}</strong><small>{item.detail}</small></span>
@@ -158,16 +174,20 @@ function Sidebar({ view, setView, completed, selectedWeek }: {
         <div className="mini-progress"><span style={{ width: `${weekProgress * 33.33}%` }} /></div>
         <small>{weekProgress}/3 modules complete</small>
       </div>
+      <button className="sidebar-collapse" onClick={toggleCollapsed} aria-label={collapsed ? 'Expand menu' : 'Collapse menu'} title={collapsed ? 'Expand menu' : 'Collapse menu'}>
+        <span>{collapsed ? '»' : '«'}</span>
+      </button>
     </aside>
   )
 }
 
-function Topbar({ view, selectedWeek, setSelectedWeek, profileName, openProfile }: {
+function Topbar({ view, selectedWeek, setSelectedWeek, profileName, openProfile, openWalkthrough }: {
   view: View
   selectedWeek: number
   setSelectedWeek: (week: number) => void
   profileName: string
   openProfile: () => void
+  openWalkthrough: () => void
 }) {
   const titles: Record<View, string> = {
     home: 'Your learning cockpit',
@@ -183,6 +203,7 @@ function Topbar({ view, selectedWeek, setSelectedWeek, profileName, openProfile 
     <header className="topbar">
       <div><span className="eyebrow">WEEK {String(selectedWeek).padStart(2, '0')} · {currentWeek.phase.toUpperCase()}</span><h2>{titles[view]}</h2></div>
       <div className="topbar-actions">
+        <button className="site-help-button" onClick={openWalkthrough} aria-label="Open website walkthrough"><span>How to use?</span></button>
         <div className="week-switcher">
           <button disabled={selectedWeek === 1} onClick={() => setSelectedWeek(selectedWeek - 1)}>←</button>
           <select value={selectedWeek} onChange={(event) => setSelectedWeek(Number(event.target.value))} aria-label="Select course week">
@@ -228,7 +249,8 @@ function ProfilePanel({ open, close, name, saveName, completed, solvedProblems, 
           <label><span>DISPLAY NAME</span><input maxLength={50} value={draftName} onChange={(event) => setDraftName(event.target.value)} placeholder="What should we call you?" /></label>
           <button onClick={() => saveName(draftName)} disabled={!draftName.trim()}>{name ? 'Update name' : 'Save my name'}</button>
         </div>
-        <p className="sync-status"><span className="local" /> Saved automatically on this browser and device.</p>
+        <p className="name-disclosure">We'll only receive your chosen name to understand Codyssey's traffic. Your learning progress remains private on this device.</p>
+        <p className="sync-status"><span className="local" /> Progress is saved automatically on this browser and device.</p>
 
         <div className="profile-stats">
           <article><span>DSA QUESTIONS</span><strong>{solvedProblems.length}<small> / {totalDsaQuestions}</small></strong><div><i style={{ width: `${(solvedProblems.length / totalDsaQuestions) * 100}%` }} /></div></article>
@@ -431,7 +453,7 @@ function Appendix() {
             <div className="resource-links">
               {group.resources.map((resource) => (
                 <a href={resource.url} target="_blank" rel="noreferrer" key={resource.url}>
-                  <div><strong>{resource.name}</strong><p>{resource.note}</p></div><span>↗</span>
+                  <div><strong>{resource.name}</strong><p>{resource.note}</p></div><ExternalLinkIcon />
                 </a>
               ))}
             </div>
@@ -595,7 +617,7 @@ function PracticeLibrary({ week, completedProblems, toggleProblem }: {
                           <button className="problem-checkbox" onClick={() => toggleProblem(key)} aria-label={solved ? `Mark ${problem.title} incomplete` : `Mark ${problem.title} complete`}>{solved ? '✓' : ''}</button>
                           <a href={problemUrl(problem)} target="_blank" rel="noreferrer">
                             <span><strong>{problem.title}</strong><small>{problem.source.toUpperCase()}{problem.difficulty === 'Basic' ? ' · BASIC' : ''}</small></span>
-                            <b>↗</b>
+                            <ExternalLinkIcon />
                           </a>
                           <button className="problem-guide-button" onClick={() => setExpandedProblem(guideOpen ? null : key)} aria-expanded={guideOpen}>{guideOpen ? 'Close' : 'Guide'}</button>
                         </div>
@@ -1041,8 +1063,12 @@ function DesignModule({ module, lesson, completed, complete, setView, setSelecte
 
       <section className="source-shelf">
         <div><span className="section-kicker">SOURCE SHELF</span><h2>Continue with the original references</h2></div>
-        <div>{lesson.sources.map((source) => <a href={source.url} target="_blank" rel="noreferrer" key={source.url}>{source.label}<span>↗</span></a>)}</div>
+        <div>{lesson.sources.map((source) => <a href={source.url} target="_blank" rel="noreferrer" key={source.url}>{source.label}<ExternalLinkIcon /></a>)}</div>
       </section>
+
+      <Suspense fallback={<section className="explore-more-loading">Loading deeper examples…</section>}>
+        <DesignExploreMore track={module} week={lesson.week} />
+      </Suspense>
 
       <div className="module-actions">
         <button className="secondary-button" onClick={() => setView('roadmap')}>View course map</button>
@@ -1133,6 +1159,9 @@ export default function App() {
   })
   const [profileName, setProfileName] = useState(() => localStorage.getItem(storageKeys.profileName) ?? '')
   const [profileOpen, setProfileOpen] = useState(false)
+  const [websiteWalkthroughOpen, setWebsiteWalkthroughOpen] = useState(() => localStorage.getItem(storageKeys.websiteWalkthroughSeen) !== 'true')
+  const [websiteWalkthroughStep, setWebsiteWalkthroughStep] = useState(0)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem(storageKeys.sidebarCollapsed) === 'true')
   const [selectedWeek, setSelectedWeekState] = useState(() => {
     const saved = Number(localStorage.getItem(storageKeys.selectedWeek))
     return saved >= 1 && saved <= 12 ? saved : 1
@@ -1154,8 +1183,12 @@ export default function App() {
   })
 
   useEffect(() => {
-    if (!profileName) setProfileOpen(true)
+    recordVisit()
   }, [])
+
+  useEffect(() => {
+    if (!profileName && !websiteWalkthroughOpen) setProfileOpen(true)
+  }, [profileName, websiteWalkthroughOpen])
 
   useEffect(() => {
     localStorage.setItem(storageKeys.completed, JSON.stringify(completed))
@@ -1180,6 +1213,12 @@ export default function App() {
   const setSelectedWeek = (week: number) => {
     setSelectedWeekState(Math.min(12, Math.max(1, week)))
   }
+  const toggleSidebar = () => {
+    setSidebarCollapsed((current) => {
+      localStorage.setItem(storageKeys.sidebarCollapsed, String(!current))
+      return !current
+    })
+  }
   const toggleProblem = (key: string) => {
     setSolvedProblems((current) => current.includes(key) ? current.filter((item) => item !== key) : [...current, key])
   }
@@ -1187,7 +1226,13 @@ export default function App() {
     const trimmed = name.trim()
     if (!trimmed) return
     setProfileName(trimmed)
+    recordVisitorName(trimmed)
     setProfileOpen(false)
+  }
+  const closeWebsiteWalkthrough = () => {
+    localStorage.setItem(storageKeys.websiteWalkthroughSeen, 'true')
+    setWebsiteWalkthroughOpen(false)
+    setWebsiteWalkthroughStep(0)
   }
   const exportProgress = () => {
     const backup = {
@@ -1225,6 +1270,18 @@ export default function App() {
   }
   const recommendedWeek = roadmap.find((week) => !isWeekComplete(week.week, completed))?.week ?? 12
   const currentWeek = roadmap[selectedWeek - 1]
+  const websiteTourSteps = useMemo<TourStep[]>(() => [
+    { selector: '.hero-copy h1', title: 'Your learning cockpit', detail: 'Start here to see the selected week, overall direction, completion status, and the three learning tracks.', action: () => setView('home') },
+    { selector: '.roadmap-week.current', title: 'Move through all 12 weeks', detail: 'The roadmap lets you inspect every week and jump directly to any topic. The schedule is recommended, never locked.', action: () => setView('roadmap') },
+    { selector: '.theory-explorer-heading h2', title: 'Understand the pattern first', detail: 'Choose a pattern and learn its recognition signals, invariant, implementation blueprint, adaptation questions, and common mistakes.', action: () => setView('dsa') },
+    { selector: '.player-header-actions', title: 'Control the algorithm trace', detail: 'Edit inputs, predict the next state, step through Python, inspect variables, change speed, or enter Focus mode.', action: () => setView('dsa') },
+    { selector: '.practice-heading h2', title: 'Apply the pattern to questions', detail: 'Practise by difficulty. Open a title for the original problem, use Guide when stuck, and check it off only after solving.', action: () => setView('dsa') },
+    { selector: '.lesson-step', title: 'Learn system design from first principles', detail: 'HLD builds scale, reliability, and distributed-systems reasoning from beginner mental models to full interviews.', action: () => setView('hld') },
+    { selector: '.lesson-header h1', title: 'Translate requirements into objects', detail: 'LLD develops responsibilities, SOLID reasoning, design patterns, extensibility, and implementation judgement.', action: () => setView('lld') },
+    { selector: '.workspace-actions', title: 'Draw the problem state', detail: 'Visual Workspace lets you build real data structures, connect pointers, mark state, and write the invariant beside the canvas.', action: () => setView('workspace') },
+    { selector: '.avatar', title: 'Protect your progress', detail: 'Open your profile to view coverage and export or import progress. Your study data stays in this browser.' },
+    { selector: '.appendix-stats', title: 'Explore the source library', detail: 'The Appendix contains the original practice material, design references, engineering blogs, and visual-learning resources.', action: () => setView('appendix') },
+  ], [])
   const renderModule = (module: ModuleId) => {
     if (module === 'dsa') {
       return (
@@ -1268,16 +1325,16 @@ export default function App() {
   }
 
   return (
-    <div className="app-shell">
-      <Sidebar view={view} setView={setView} completed={completed} selectedWeek={selectedWeek} />
+    <div className={`app-shell ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <Sidebar view={view} setView={setView} completed={completed} selectedWeek={selectedWeek} collapsed={sidebarCollapsed} toggleCollapsed={toggleSidebar} />
       <main>
-        <Topbar view={view} selectedWeek={selectedWeek} setSelectedWeek={setSelectedWeek} profileName={profileName} openProfile={() => setProfileOpen(true)} />
+        <Topbar view={view} selectedWeek={selectedWeek} setSelectedWeek={setSelectedWeek} profileName={profileName} openProfile={() => setProfileOpen(true)} openWalkthrough={() => setWebsiteWalkthroughOpen(true)} />
         {view === 'home' && <Home setView={setView} completed={completed} week={currentWeek} recommendedWeek={recommendedWeek} setSelectedWeek={setSelectedWeek} />}
         {view === 'roadmap' && <Roadmap selectedWeek={selectedWeek} setSelectedWeek={setSelectedWeek} completed={completed} setView={setView} recommendedWeek={recommendedWeek} />}
         {view === 'dsa' && renderModule('dsa')}
         {view === 'hld' && renderModule('hld')}
         {view === 'lld' && renderModule('lld')}
-        {view === 'workspace' && <VisualWorkspace />}
+        {view === 'workspace' && <VisualWorkspace suppressWalkthrough={websiteWalkthroughOpen} />}
         {view === 'appendix' && <Appendix />}
       </main>
       <ProfilePanel
@@ -1290,6 +1347,7 @@ export default function App() {
         exportProgress={exportProgress}
         importProgress={importProgress}
       />
+      <GuidedTour open={websiteWalkthroughOpen} steps={websiteTourSteps} index={websiteWalkthroughStep} setIndex={setWebsiteWalkthroughStep} close={closeWebsiteWalkthrough} label="CODYSSEY TOUR" />
     </div>
   )
 }
