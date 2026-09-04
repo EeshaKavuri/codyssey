@@ -1,111 +1,231 @@
-# Codyssey
+<div align="center">
 
-> **Learn the pattern. Trace the state. Design the system.**
+<img src="src/assets/codyssey-logo.png" alt="Codyssey logo" width="280" />
 
-Codyssey is an interactive, self-paced interview-preparation studio for **Data Structures & Algorithms, High-Level Design, and Low-Level Design**. It turns passive notes into visual explanations, controllable algorithm traces, structured practice, and a canvas for thinking through problems.
+# ✨ CODYSSEY
 
-## Why Codyssey?
+### Learn the pattern. Trace the state. Design the system.
 
-Interview preparation should not feel like memorising disconnected solutions. Codyssey teaches from the bird's-eye view first, then gradually moves into implementation details, invariants, trade-offs, edge cases, and interview-ready reasoning.
+**An interactive interview-preparation studio for DSA, HLD and LLD.**
 
-### What is included
+<br />
 
-- **12-week self-paced curriculum** — complete a week whenever you are ready
-- **455 DSA questions** grouped into **60 reusable patterns**
-- **Interactive algorithm traces** with playback controls, Python line highlighting, variable state, narration, custom input, and prediction prompts
-- **Pattern playbooks** covering recognition signals, invariants, implementation blueprints, complexity, adaptation questions, and common mistakes
-- **Beginner-first HLD and LLD lessons** with mental models, trade-offs, misconceptions, interview prompts, and real-world context
-- **Visual Problem Workspace** for modelling arrays, matrices, linked lists, stacks, queues, trees, heaps, tries, and graphs
-- **Practice tracking** by Easy, Medium, and Hard difficulty
-- **Local profiles and progress** with JSON export/import for backup or device migration
-- **Appendix of learning resources** used across DSA, HLD, LLD, engineering blogs, simulators, and UX inspiration
+![12 Weeks](https://img.shields.io/badge/12_Weeks-Self_Paced-FF9F43?style=for-the-badge)
+![455 Questions](https://img.shields.io/badge/455-DSA_Questions-2ECC71?style=for-the-badge)
+![60 Patterns](https://img.shields.io/badge/60-Reusable_Patterns-9B59B6?style=for-the-badge)
+![Local First](https://img.shields.io/badge/Progress-Local_First-3498DB?style=for-the-badge)
 
-## Visual Problem Workspace
+![React](https://img.shields.io/badge/React_19-20232A?style=flat-square&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=flat-square&logo=vite&logoColor=FFD62E)
+![GitHub Pages](https://img.shields.io/badge/Deploy-GitHub_Pages-222222?style=flat-square&logo=github)
 
-Build the exact state described by a problem before writing code:
+</div>
 
-- Add, edit, move, highlight, and delete nodes or cells
-- Connect `next`, `prev`, `left`, `right`, child, and graph edges
-- Model shared linked-list tails and intersections
-- Write invariants, pseudocode, and edge-case tests beside the diagram
-- Undo changes, clear the canvas, or restore structure examples
-- Keep each workspace automatically saved in the browser
+---
 
-## Learning flow
+## 🚀 Stop memorising. Start understanding.
 
-```text
-Mental model
-     ↓
-Recognise the pattern
-     ↓
-Understand the invariant
-     ↓
-Trace the algorithm
-     ↓
-Adapt the blueprint
-     ↓
-Solve and review
+Codyssey turns passive interview notes into an experience you can **see, control and explore**.
+
+Instead of memorising isolated solutions, you learn:
+
+- 🔍 **How to recognise a pattern**
+- 🧠 **Which invariant makes the solution work**
+- 🎮 **How state changes one step at a time**
+- 🧩 **How to adapt a blueprint to unfamiliar problems**
+- ⚖️ **How to explain design trade-offs like an engineer**
+
+> [!IMPORTANT]
+> Codyssey begins with the bird's-eye view, builds the mental model, traces the implementation, and only then asks you to solve problems.
+
+---
+
+## 🌈 What makes Codyssey different?
+
+<table>
+  <tr>
+    <td width="50%">
+      <h3>🎬 Interactive DSA traces</h3>
+      Control execution with play, pause, restart, speed and step navigation. Follow highlighted Python, narration and live variables.
+    </td>
+    <td width="50%">
+      <h3>🧠 Pattern playbooks</h3>
+      Learn recognition signals, invariants, reusable implementation templates, complexity and common traps.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>🎨 Visual Problem Workspace</h3>
+      Build and manipulate data structures while writing your invariant, pseudocode and edge-case tests beside them.
+    </td>
+    <td>
+      <h3>🏗️ HLD + LLD from zero</h3>
+      Move from web fundamentals and SOLID principles to distributed systems and complete interview designs.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <h3>🎯 455 structured questions</h3>
+      Practice by pattern and difficulty. Open the original problem while tracking completion separately.
+    </td>
+    <td>
+      <h3>💾 Private, local progress</h3>
+      No account or backend. Export and import progress whenever you move browsers or devices.
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🧭 The Codyssey learning loop
+
+```mermaid
+flowchart LR
+    A["🌍 Mental model"] --> B["🔍 Recognise"]
+    B --> C["🧠 Define invariant"]
+    C --> D["🎬 Trace execution"]
+    D --> E["🧩 Adapt blueprint"]
+    E --> F["💻 Solve"]
+    F --> G["🔁 Review"]
+    G -. stronger recall .-> B
+
+    style A fill:#d9f1e5,stroke:#174f3f,color:#174f3f
+    style B fill:#fff0c9,stroke:#d68b24,color:#71450d
+    style C fill:#e9e1fa,stroke:#7456b7,color:#493479
+    style D fill:#ffdabc,stroke:#d9782c,color:#71390d
+    style E fill:#dcecff,stroke:#4684c4,color:#244b72
+    style F fill:#c9efdc,stroke:#27875d,color:#17533a
+    style G fill:#f6dce4,stroke:#b85c78,color:#713247
 ```
 
-## Tech stack
+---
 
-- React 19
-- TypeScript
-- Vite 6
-- CSS animations and SVG visualisations
-- Browser `localStorage`
-- GitHub Actions and GitHub Pages
+## 🧪 Visual Problem Workspace
 
-Codyssey is fully static. It does not require a database, authentication provider, or backend service.
+> Draw the state **before** writing the code.
 
-## Production build
+The freeform workspace supports:
+
+| Structure | Visual model |
+|---|---|
+| 🧱 Arrays | Indexed, editable cells |
+| 🟦 Matrices | Row and column coordinates |
+| 🔗 Singly linked lists | `VALUE │ NEXT` pointer compartments |
+| ↔️ Doubly linked lists | `PREV │ VALUE │ NEXT` reciprocal pointers |
+| 📚 Stacks | LIFO cells with a visible `TOP` |
+| 🚶 Queues | FIFO cells with `FRONT` and `REAR` |
+| 🌳 Binary trees | `LEFT │ VALUE │ RIGHT` child pointers |
+| 🔺 Heaps | Array-indexed parent and child relationships |
+| 🔤 Tries | Character nodes with multi-child links |
+| 🕸️ Graphs | Freeform nodes, edges and degree indicators |
+
+### Workspace superpowers
+
+- Add, edit, move, highlight and delete nodes
+- Select pointer compartments and connect them visually
+- Model linked-list intersections and shared tails
+- Undo changes or clear the canvas
+- Write the invariant, pseudocode and edge cases
+- Automatically preserve every workspace in the browser
+
+---
+
+## 🗺️ One course. Three engineering lenses.
+
+| 💻 DSA | 🌐 High-Level Design | 🧱 Low-Level Design |
+|---|---|---|
+| Patterns and invariants | Scale and distributed systems | Objects and responsibilities |
+| Animated execution | Reliability and trade-offs | SOLID and design patterns |
+| 455 practice questions | Production mental models | Extensible interview designs |
+| Complexity analysis | Complete design interviews | Python implementation guidance |
+
+The curriculum is divided into **12 recommended weeks**, but nothing is calendar-locked. Finish a week in two days or two months—Codyssey advances when you do.
+
+---
+
+## 🛠️ Built with
+
+```text
+⚛️  React 19                  🟦 TypeScript
+⚡ Vite 6                     🎨 CSS animations
+🔀 SVG visualisations         💾 Browser localStorage
+🚀 GitHub Actions             🌍 GitHub Pages
+```
+
+Codyssey is fully static: **no database, authentication provider or backend service required**.
+
+---
+
+## 📦 Production build
 
 ```powershell
 npm run build
 npm run preview
 ```
 
-The production files are generated in `dist`.
-
-## Deploy with GitHub Pages
-
-The repository includes a GitHub Actions deployment workflow.
-
-1. Push the project to a GitHub repository whose default branch is `main`.
-2. Open **Settings → Pages**.
-3. Set **Source** to **GitHub Actions**.
-4. Push to `main`.
-5. The workflow builds the app and publishes `dist`.
-
-Vite uses relative asset paths, so repository-level GitHub Pages URLs are supported.
-
-## Progress and privacy
-
-Codyssey is local-first:
-
-- Your display name, selected week, completed modules, solved questions, active page, and visual workspaces remain in your browser.
-- No account or server is required.
-- Clearing browser site data removes local progress.
-- Use **Profile → Export progress** to download a backup.
-- Use **Import progress** to restore it in another browser or device.
-
-## Project structure
-
-```text
-src/
-├── components/dsa/        Interactive traces and visual workspace
-├── data/                  DSA catalog, theory, curricula, and resources
-├── App.tsx                Navigation, progress, lessons, and practice
-└── styles.css             Responsive UI and animations
-
-scripts/                   DSA sheet parsing and URL attachment tools
-.github/workflows/         GitHub Pages deployment
-```
-
-## Content transparency
-
-The course text is synthesised for Codyssey rather than copied from external resources. The in-app Appendix links to the original DSA sheets, system-design guides, reliability books, design-pattern references, engineering blogs, and visual-learning products that informed the curriculum.
+The deployable output is generated in `dist`.
 
 ---
 
-**Codyssey** — because interview preparation is a journey, not a checklist.
+## 🌍 Deploy with GitHub Pages
+
+1. Push the project to a repository whose default branch is `main`.
+2. Open **Settings → Pages**.
+3. Set **Source** to **GitHub Actions**.
+4. Push to `main`.
+5. The included workflow builds and publishes `dist`.
+
+> [!TIP]
+> Vite uses relative asset paths, so repository-level GitHub Pages URLs are supported.
+
+---
+
+## 🔐 Progress and privacy
+
+Your profile and learning data remain in your browser:
+
+- Display name
+- Selected week and active section
+- Completed modules
+- Solved questions
+- Visual workspaces and reasoning notes
+
+Use **Profile → Export progress** to create a JSON backup and **Import progress** to restore it elsewhere.
+
+> [!WARNING]
+> Clearing browser site data removes local progress unless you export a backup first.
+
+---
+
+## 🗂️ Project map
+
+```text
+src/
+├── assets/                 Codyssey artwork
+├── components/dsa/         Interactive traces and visual workspace
+├── data/                   DSA catalog, theory, curricula and resources
+├── App.tsx                 Navigation, lessons and progress
+└── styles.css              Responsive UI and animations
+
+scripts/                    DSA sheet processing tools
+.github/workflows/          GitHub Pages deployment
+```
+
+---
+
+## 📚 Content transparency
+
+The lesson text is synthesised specifically for Codyssey rather than copied from external resources. The in-app Appendix links to the original DSA sheets, system-design guides, SRE books, design-pattern references, engineering blogs and visual-learning products that informed the curriculum.
+
+---
+
+<div align="center">
+
+## Ready to begin your Codyssey? 🚀
+
+**Understand deeply. Practise deliberately. Explain confidently.**
+
+<sub>Because interview preparation is a journey—not a checklist.</sub>
+
+</div>
