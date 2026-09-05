@@ -6,13 +6,14 @@ export const storageKeys = {
   currentView: 'codyssey-current-view',
   visualWorkspace: 'codyssey-visual-workspace',
   workspaceWalkthroughSeen: 'codyssey-workspace-walkthrough-seen',
-  websiteWalkthroughSeen: 'codyssey-website-walkthrough-seen-v2',
+  websiteWalkthroughSeen: 'codyssey-website-walkthrough-seen-v3',
   sidebarCollapsed: 'codyssey-sidebar-collapsed',
 } as const
 
 const legacyPrefix = ['algo', 'prep'].join('')
 
 Object.entries(storageKeys).forEach(([name, key]) => {
+  if (name === 'websiteWalkthroughSeen') return
   if (localStorage.getItem(key) !== null) return
   const suffixes: Record<string, string> = {
     profileName: 'profile-name',

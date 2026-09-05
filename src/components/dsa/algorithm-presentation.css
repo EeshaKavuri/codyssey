@@ -1,0 +1,48 @@
+.studio-shell .algorithm-player.stable-player .player-workspace { align-items: start; }
+.studio-shell .algorithm-player.stable-player .scene-panel { grid-template-rows: auto auto; align-self: start; }
+.studio-shell .algorithm-player.stable-player .scene-grid {
+  height: clamp(360px, 44vh, 480px);
+  min-height: 0;
+  align-items: safe center;
+  justify-items: safe center;
+  overflow: auto;
+  overflow-anchor: none;
+}
+.studio-shell .algorithm-player.stable-player .narration-card {
+  height: 180px;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #53674e #111914;
+}
+.studio-shell .algorithm-player.stable-player .trace-panel {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  align-self: start;
+}
+.studio-shell .algorithm-player.stable-player .code-trace {
+  height: min(460px, calc(var(--trace-code-lines) * 31px + 72px));
+  max-height: none;
+}
+.studio-shell .algorithm-player.stable-player .variable-watch .variable-cell {
+  height: 100px;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: start;
+}
+.studio-shell .algorithm-player.stable-player .variable-cell > code {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #53674e transparent;
+}
+.studio-shell .algorithm-player.stable-player .variable-cell.inactive { border-style: dashed; background: #111914; }
+.studio-shell .algorithm-player.stable-player .variable-cell.inactive code { color: #9aa99e; font: 11px/1.6 'Manrope', sans-serif; }
+.studio-shell .algorithm-player.stable-player .stack-container { flex-shrink: 0; }
+.studio-shell .algorithm-player.stable-player .stack-container > b { flex: 0 0 40px; height: 40px; line-height: 20px; padding-block: 9px; animation: none; }
+.studio-shell .algorithm-player.stable-player .stack-empty { position: absolute; inset: 45% 0 auto; text-align: center; font: 12px 'DM Mono', monospace; color: #9aa99e; }
+.studio-shell .algorithm-player.stable-player .array-bar { transition: height .32s ease, color .22s, background-color .22s, border-color .22s; }
+@container trace-studio (max-width: 600px) {
+  .studio-shell .algorithm-player.stable-player .scene-grid { height: 460px; }
+  .studio-shell .algorithm-player.stable-player .narration-card { height: 230px; padding-inline: 16px; }
+}

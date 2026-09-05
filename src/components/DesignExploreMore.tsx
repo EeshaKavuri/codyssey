@@ -10,20 +10,20 @@ function ExternalLinkIcon() {
   )
 }
 
-export default function DesignExploreMore({ track, week }: { track: DesignTrack; week: number }) {
-  const [activeTab, setActiveTab] = useState<'examples' | 'resources' | 'challenge'>('examples')
+export default function DesignExploreMore({ track, week, initialTab = 'examples' }: { track: DesignTrack; week: number; initialTab?: 'examples' | 'resources' | 'challenge' }) {
+  const [activeTab, setActiveTab] = useState(initialTab)
   const exploration = getDesignExploration(track, week)
 
-  useEffect(() => setActiveTab('examples'), [track, week])
+  useEffect(() => setActiveTab(initialTab), [track, week, initialTab])
 
   return (
     <section className={`explore-more ${track}`}>
       <div className="explore-more-heading">
         <div><span className="section-kicker">EXPLORE MORE</span><h2>Understand it, then stretch it</h2><p>See where this idea appears, study a focused reference, and test your model against a changed requirement.</p></div>
         <div className="explore-tabs">
-          <button className={activeTab === 'examples' ? 'active' : ''} onClick={() => setActiveTab('examples')}>Use cases</button>
-          <button className={activeTab === 'resources' ? 'active' : ''} onClick={() => setActiveTab('resources')}>Read deeper</button>
-          <button className={activeTab === 'challenge' ? 'active' : ''} onClick={() => setActiveTab('challenge')}>Stretch challenge</button>
+          <button aria-pressed={activeTab === 'examples'} className={activeTab === 'examples' ? 'active' : ''} onClick={() => setActiveTab('examples')}>Use cases</button>
+          <button aria-pressed={activeTab === 'resources'} className={activeTab === 'resources' ? 'active' : ''} onClick={() => setActiveTab('resources')}>Read deeper</button>
+          <button aria-pressed={activeTab === 'challenge'} className={activeTab === 'challenge' ? 'active' : ''} onClick={() => setActiveTab('challenge')}>Stretch challenge</button>
         </div>
       </div>
       {activeTab === 'examples' && <div className="explore-example-grid">

@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react'
+import { Maximize2, Minimize2 } from 'lucide-react'
 import { storageKeys } from '../../data/storage'
-import { GuidedTour, type TourStep } from '../GuidedTour'
+import './workspace-fullscreen.css'
 
 type WorkspaceMode = 'array' | 'matrix' | 'linked' | 'doubly' | 'stack' | 'queue' | 'tree' | 'heap' | 'trie' | 'graph'
 type NodeTone = 'plain' | 'active' | 'done' | 'warning'
@@ -204,93 +205,61 @@ function heapPosition(index: number) {
   return { x: 70 + ((offset + 0.5) / slots) * 560, y: 75 + level * 120 }
 }
 
-export function VisualWorkspace({ suppressWalkthrough = false }: { suppressWalkthrough?: boolean }) {
+export function VisualWorkspace() {
   const [mode, setMode] = useState<WorkspaceMode>('linked')
   const [boards, setBoards] = useState<Boards>(initialBoards)
   const [selected, setSelected] = useState<number | null>(1)
   const [pending, setPending] = useState<{ from: number; type: ConnectionType } | null>(null)
   const [message, setMessage] = useState('Select a node to edit it, or drag it anywhere on the canvas.')
   const [history, setHistory] = useState<{ mode: WorkspaceMode; board: Board }[]>([])
-  const [walkthroughOpen, setWalkthroughOpen] = useState(() => !suppressWalkthrough && localStorage.getItem(storageKeys.workspaceWalkthroughSeen) !== 'true')
-  const [walkthroughStep, setWalkthroughStep] = useState(0)
+  const [fullscreen, setFullscreen] = useState(false)
+  const [fullscreenBusy, setFullscreenBusy] = useState(false)
+  const [fullscreenError, setFullscreenError] = useState('')
   const [drag, setDrag] = useState<{ id: number; offsetX: number; offsetY: number } | null>(null)
   const [draftConnection, setDraftConnection] = useState<{ from: number; type: Exclude<ConnectionType, 'edge'>; x: number; y: number } | null>(null)
+  const workspaceRef = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLDivElement>(null)
   const dragRememberedRef = useRef(false)
-  const walkthroughSnapshotRef = useRef<Boards | null>(null)
   const board = boards[mode]
   const selectedNode = board.nodes.find((node) => node.id === selected) ?? null
 
   useEffect(() => {
-    if (walkthroughOpen) return
     localStorage.setItem(storageKeys.visualWorkspace, JSON.stringify(boards))
-  }, [boards, walkthroughOpen])
-
-  const closeWalkthrough = () => {
-    if (walkthroughSnapshotRef.current) {
-      setBoards(walkthroughSnapshotRef.current)
-      walkthroughSnapshotRef.current = null
-    }
-    localStorage.setItem(storageKeys.workspaceWalkthroughSeen, 'true')
-    setWalkthroughOpen(false)
-    setWalkthroughStep(0)
-    setPending(null)
-    setDraftConnection(null)
-    setMessage('Walkthrough complete. Your original workspace has been restored.')
-  }
-
-  const walkthroughBoard = (stage: number): Board => {
-    const first = { id: 1, value: '7', x: 150, y: 210, tone: 'plain' as const }
-    const second = { id: 2, value: '14', x: stage >= 2 ? 420 : 570, y: stage >= 2 ? 210 : 340, tone: stage >= 4 ? 'active' as const : 'plain' as const }
-    return {
-      nodes: stage === 0 ? [first] : [first, second],
-      edges: stage >= 4 ? [{ from: 1, to: 2, type: 'next' }] : [],
-      notes: 'Walkthrough demo: connect node 7 to node 14 while preserving reachability.',
-      approach: '1. Select the NEXT address on node 7\n2. Move to node 14\n3. Click node 14 to save the pointer',
-      edgeCases: 'What should NEXT show when it is null?',
-    }
-  }
-
-  const showWalkthroughStage = useCallback((stage: number) => {
-    setMode('linked')
-    setSelected(stage >= 1 ? 2 : 1)
-    setBoards((current) => ({ ...current, linked: walkthroughBoard(stage) }))
-    if (stage === 3) {
-      setSelected(1)
-      setPending({ from: 1, type: 'next' })
-      setDraftConnection({ from: 1, type: 'next', x: 360, y: 210 })
-      setMessage('NEXT is selected. In normal use, this orange arrow follows your mouse.')
-    } else {
-      setPending(null)
-      setDraftConnection(null)
-      setMessage(stage >= 4 ? 'Connection saved: node 7 now points to node 14.' : 'This demonstration is using the real workspace canvas.')
-    }
-  }, [])
-
-  const startWalkthrough = () => {
-    if (!walkthroughSnapshotRef.current) {
-      walkthroughSnapshotRef.current = {
-        array: cloneBoard(boards.array),
-        matrix: cloneBoard(boards.matrix),
-        linked: cloneBoard(boards.linked),
-        doubly: cloneBoard(boards.doubly),
-        stack: cloneBoard(boards.stack),
-        queue: cloneBoard(boards.queue),
-        tree: cloneBoard(boards.tree),
-        heap: cloneBoard(boards.heap),
-        trie: cloneBoard(boards.trie),
-        graph: cloneBoard(boards.graph),
-      }
-    }
-    setWalkthroughStep(0)
-    setWalkthroughOpen(true)
-    showWalkthroughStage(0)
-  }
+  }, [boards])
 
   useEffect(() => {
-    const unseen = localStorage.getItem(storageKeys.workspaceWalkthroughSeen) !== 'true'
-    if (!suppressWalkthrough && unseen && !walkthroughSnapshotRef.current) startWalkthrough()
-  }, [suppressWalkthrough, walkthroughOpen])
+    const updateFullscreen = () => setFullscreen(document.fullscreenElement === workspaceRef.current)
+    updateFullscreen()
+    document.addEventListener('fullscreenchange', updateFullscreen)
+    return () => document.removeEventListener('fullscreenchange', updateFullscreen)
+  }, [])
+
+  const toggleFullscreen = async () => {
+    if (fullscreenBusy) return
+    const workspace = workspaceRef.current
+    const exiting = workspace !== null && document.fullscreenElement === workspace
+    setFullscreenBusy(true)
+    setFullscreenError('')
+    try {
+      if (!workspace) throw new Error('The workspace is not available.')
+      if (exiting) {
+        if (typeof document.exitFullscreen !== 'function') throw new Error('This browser does not support exiting fullscreen.')
+        await document.exitFullscreen()
+      } else {
+        if (typeof workspace.requestFullscreen !== 'function' || document.fullscreenEnabled === false) {
+          throw new Error('Fullscreen is not supported or is blocked by this browser.')
+        }
+        await workspace.requestFullscreen()
+      }
+      setFullscreen(document.fullscreenElement === workspace)
+    } catch (error) {
+      console.error('Could not change workspace fullscreen mode.', error)
+      const detail = error instanceof Error ? error.message : String(error)
+      setFullscreenError(`Could not ${exiting ? 'exit' : 'enter'} fullscreen. ${detail} Your workspace is unchanged.`)
+    } finally {
+      setFullscreenBusy(false)
+    }
+  }
 
   const remember = () => setHistory((current) => [...current.slice(-39), { mode, board: cloneBoard(board) }])
   const updateBoard = (next: Board) => setBoards((current) => ({ ...current, [mode]: next }))
@@ -541,15 +510,6 @@ export function VisualWorkspace({ suppressWalkthrough = false }: { suppressWalkt
   })).filter((item): item is { edge: WorkspaceEdge; from: WorkspaceNode; to: WorkspaceNode } => Boolean(item.from && item.to)), [board.nodes, renderedEdges])
   const canvasWidth = Math.max(680, ...board.nodes.map((node) => node.x + 90))
   const canvasHeight = Math.max(570, ...board.nodes.map((node) => node.y + 90))
-  const workspaceTourSteps = useMemo<TourStep[]>(() => [
-    { selector: '.workspace-modes', title: 'Choose a data structure', detail: 'Each tab opens a structure-specific canvas with its own saved diagram and reasoning notes.', action: () => showWalkthroughStage(0) },
-    { selector: '.workspace-actions', title: 'Create a new node', detail: 'Use Add node to create another node. The walkthrough has added node 14 to the real canvas as an example.', action: () => showWalkthroughStage(1) },
-    { selector: '.workspace-canvas.linked .linked-value-cell', title: 'Move the complete node', detail: 'Drag from the VALUE compartment. Watch node 14 move into position; pointer compartments never move nodes.', action: () => showWalkthroughStage(2) },
-    { selector: '.workspace-canvas.linked .linked-address-cell', title: 'Arm the NEXT address', detail: 'Click NEXT once. It turns orange and produces a live arrow that follows your mouse until you select or cancel it.', action: () => showWalkthroughStage(3) },
-    { selector: '.workspace-canvas.linked', title: 'Click the target node', detail: 'Click node 14 to save the connection. The walkthrough has now completed 7.next = 14 on this canvas.', action: () => showWalkthroughStage(4) },
-    { selector: '.workspace-inspector', title: 'Edit the selected item', detail: 'Change its value, apply a state color, remove connections, or delete the node and its attached edges.' },
-    { selector: '.workspace-notes', title: 'Capture your reasoning', detail: 'Write the invariant, solution approach, pseudocode, and edge-case tests beside the diagram. These notes autosave.' },
-  ], [showWalkthroughStage])
 
   return (
     <div className="page workspace-page">
@@ -559,7 +519,7 @@ export function VisualWorkspace({ suppressWalkthrough = false }: { suppressWalkt
         <p>Build the exact structure from a problem, move pointers and nodes, mark algorithm state, and write down the invariant you are trying to preserve. Everything is saved automatically in this browser.</p>
       </section>
 
-      <section className={`workspace-shell ${walkthroughOpen ? 'walkthrough-demonstrating' : ''}`}>
+      <section className="workspace-shell" ref={workspaceRef}>
         <header className="workspace-toolbar">
           <div className="workspace-modes">
             {([
@@ -576,12 +536,24 @@ export function VisualWorkspace({ suppressWalkthrough = false }: { suppressWalkt
             ] as [WorkspaceMode, string][]).map(([id, label]) => <button className={mode === id ? 'active' : ''} onClick={() => switchMode(id)} key={id}>{label}</button>)}
           </div>
           <div className="workspace-actions">
-            <button className="walkthrough-button" onClick={startWalkthrough}>How to use?</button>
             <button onClick={addNode}>＋ Add {mode === 'array' ? 'cell' : 'node'}</button>
             <button onClick={undo} disabled={!history.length}>↶ Undo</button>
             <button onClick={reset}>↻ Example</button>
             <button className="clear-canvas-button" onClick={clearCanvas} disabled={!board.nodes.length}>Clear canvas</button>
+            <button
+              type="button"
+              className="workspace-fullscreen-button"
+              onClick={toggleFullscreen}
+              disabled={fullscreenBusy}
+              aria-pressed={fullscreen}
+              aria-label={fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+              title={fullscreen ? 'Exit fullscreen (Esc)' : 'Enter fullscreen'}
+            >
+              {fullscreen ? <Minimize2 size={16} aria-hidden="true" /> : <Maximize2 size={16} aria-hidden="true" />}
+              {fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+            </button>
           </div>
+          {fullscreenError && <div className="workspace-message workspace-fullscreen-error" role="alert">{fullscreenError}</div>}
         </header>
 
         <div className="workspace-body">
@@ -608,7 +580,7 @@ export function VisualWorkspace({ suppressWalkthrough = false }: { suppressWalkt
             </div>
           </aside>
 
-          <div className="workspace-stage-wrap">
+          <div className="workspace-stage-wrap" role="region" aria-label="Workspace canvas" tabIndex={0}>
             <div className={`workspace-message ${pending ? 'connecting' : ''}`}>{pending ? 'CONNECT MODE · ' : ''}{message}</div>
             <div className={`workspace-canvas ${mode}`} style={{ width: '100%', minWidth: canvasWidth, height: canvasHeight }} onPointerMove={moveDraftArrow} ref={canvasRef}>
               <svg aria-hidden="true">
@@ -746,7 +718,6 @@ export function VisualWorkspace({ suppressWalkthrough = false }: { suppressWalkt
           </aside>
         </div>
       </section>
-      <GuidedTour open={walkthroughOpen} steps={workspaceTourSteps} index={walkthroughStep} setIndex={setWalkthroughStep} close={closeWalkthrough} label="WORKSPACE GUIDE" />
     </div>
   )
 }

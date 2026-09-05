@@ -1,7 +1,7 @@
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL?.replace(/\/$/, '')
 const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ?? import.meta.env.VITE_SUPABASE_ANON_KEY
 const visitorKey = 'codyssey-analytics-visitor-id'
-const sessionVisitKey = 'codyssey-analytics-session-recorded'
+const sessionVisitKey = 'codyssey-analytics-session-recorded-v2'
 
 let visitRequest: Promise<void> | null = null
 
@@ -32,7 +32,7 @@ async function recordEvent(eventType: 'visit' | 'profile_name', displayName?: st
 }
 
 export function recordVisit() {
-  if (sessionStorage.getItem(sessionVisitKey) === 'true' || visitRequest) return
+  if (!supabaseUrl || !supabasePublishableKey || sessionStorage.getItem(sessionVisitKey) === 'true' || visitRequest) return
   visitRequest = recordEvent('visit')
     .then(() => sessionStorage.setItem(sessionVisitKey, 'true'))
     .catch((error: unknown) => console.warn('Codyssey visit tracking failed.', error))

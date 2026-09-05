@@ -1,4 +1,5 @@
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useMemo, type CSSProperties } from 'react'
+import { useLessonInput, useLessonNumber } from '../../data/learningProgress'
 import { AlgorithmPlayer, type AnimationStep } from './AlgorithmPlayer'
 
 const numbers = (input: string, fallback: number[], limit = 15) => {
@@ -59,7 +60,7 @@ function treeSteps(values: number[]): AnimationStep<TreeState>[] {
 }
 
 export function TreeVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [input, setInput] = useState('8, 4, 12, 2, 6, 10, 14')
+  const [input, setInput] = useLessonInput('input', '8, 4, 12, 2, 6, 10, 14')
   const values = useMemo(() => numbers(input, [8, 4, 12, 2, 6, 10, 14]), [input])
   const steps = useMemo(() => treeSteps(values), [values])
   const code = [
@@ -171,7 +172,7 @@ function heapSteps(values: number[]): AnimationStep<HeapState>[] {
 }
 
 export function HeapVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [input, setInput] = useState('7, 3, 10, 1, 5, 2')
+  const [input, setInput] = useLessonInput('input', '7, 3, 10, 1, 5, 2')
   const values = useMemo(() => numbers(input, [7, 3, 10, 1, 5, 2]), [input])
   const steps = useMemo(() => heapSteps(values), [values])
   const code = [
@@ -280,8 +281,8 @@ function graphSteps(input: string, start: string): AnimationStep<GraphState>[] {
 }
 
 export function GraphVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [input, setInput] = useState('A-B, A-C, B-D, B-E, C-F, E-G')
-  const [start, setStart] = useState('A')
+  const [input, setInput] = useLessonInput('input', 'A-B, A-C, B-D, B-E, C-F, E-G')
+  const [start, setStart] = useLessonInput('start', 'A')
   const steps = useMemo(() => graphSteps(input, start.trim().toUpperCase()), [input, start])
   const code = [
     'queue = deque([start])',
@@ -373,7 +374,7 @@ function nQueensSteps(size: number): AnimationStep<BacktrackState>[] {
 }
 
 export function BacktrackingVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [size, setSize] = useState(4)
+  const [size, setSize] = useLessonNumber('size', 4)
   const steps = useMemo(() => nQueensSteps(size), [size])
   const code = [
     'def solve(row):',
@@ -449,8 +450,8 @@ function binarySearchSteps(values: number[], target: number | null): AnimationSt
 }
 
 export function BinarySearchVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [input, setInput] = useState('3, 6, 8, 12, 14, 17, 25, 31')
-  const [target, setTarget] = useState('17')
+  const [input, setInput] = useLessonInput('input', '3, 6, 8, 12, 14, 17, 25, 31')
+  const [target, setTarget] = useLessonInput('target', '17')
   const values = useMemo(() => numbers(input, [3, 6, 8, 12, 14, 17, 25, 31]), [input])
   const targetNumber = target.trim() !== '' && Number.isFinite(Number(target)) ? Number(target) : null
   const steps = useMemo(() => binarySearchSteps(values, targetNumber), [targetNumber, values])
@@ -516,8 +517,8 @@ function gridDpSteps(rows: number, columns: number): AnimationStep<DpState>[] {
 }
 
 export function DynamicProgrammingVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [rows, setRows] = useState(4)
-  const [columns, setColumns] = useState(5)
+  const [rows, setRows] = useLessonNumber('rows', 4)
+  const [columns, setColumns] = useLessonNumber('columns', 5)
   const steps = useMemo(() => gridDpSteps(rows, columns), [columns, rows])
   const code = [
     'dp = [[0] * columns for _ in range(rows)]',
@@ -581,7 +582,7 @@ function greedySteps(intervals: [number, number][]): AnimationStep<GreedyState>[
 }
 
 export function GreedyVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [input, setInput] = useState('1-3, 2-5, 4-6, 6-8, 5-9, 8-10')
+  const [input, setInput] = useLessonInput('input', '1-3, 2-5, 4-6, 6-8, 5-9, 8-10')
   const intervals = useMemo(() => parseIntervals(input), [input])
   const steps = useMemo(() => greedySteps(intervals), [intervals])
   const code = [
@@ -672,8 +673,8 @@ function kmpSteps(text: string, pattern: string): AnimationStep<KmpState>[] {
 }
 
 export function KmpVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [text, setText] = useState('ABABDABACDABABCABAB')
-  const [pattern, setPattern] = useState('ABABCABAB')
+  const [text, setText] = useLessonInput('text', 'ABABDABACDABABCABAB')
+  const [pattern, setPattern] = useLessonInput('pattern', 'ABABCABAB')
   const steps = useMemo(() => kmpSteps(text, pattern), [pattern, text])
   const code = [
     'lps = [0] * len(pattern)',

@@ -1,5 +1,8 @@
-import { useMemo, useState, type CSSProperties } from 'react'
+import { useMemo, type CSSProperties } from 'react'
+import { AnimatePresence, m } from 'motion/react'
+import { useLessonInput } from '../../data/learningProgress'
 import { AlgorithmPlayer, type AnimationStep } from './AlgorithmPlayer'
+import { useStudioMotion } from '../studio/StudioMotion'
 
 const parseNumbers = (input: string, fallback: number[]) => {
   const values = input.split(',').map((value) => Number(value.trim())).filter(Number.isFinite)
@@ -50,9 +53,9 @@ function linkedListSteps(values: number[], target: number, operation: string): A
 }
 
 export function LinkedListVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [input, setInput] = useState('7, 14, 21, 28')
-  const [target, setTarget] = useState('21')
-  const [operation, setOperation] = useState('search')
+  const [input, setInput] = useLessonInput('input', '7, 14, 21, 28')
+  const [target, setTarget] = useLessonInput('target', '21')
+  const [operation, setOperation] = useLessonInput('operation', 'search')
   const values = useMemo(() => parseNumbers(input, [7, 14, 21, 28]), [input])
   const number = Number(target) || 0
   const steps = useMemo(() => linkedListSteps(values, number, operation), [number, operation, values])
@@ -128,9 +131,9 @@ function arraySteps(values: number[], target: number, operation: string): Animat
 }
 
 export function ArrayVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [input, setInput] = useState('0, 7, 0, 3, 9, 2')
-  const [target, setTarget] = useState('10')
-  const [operation, setOperation] = useState('pair')
+  const [input, setInput] = useLessonInput('input', '0, 7, 0, 3, 9, 2')
+  const [target, setTarget] = useLessonInput('target', '10')
+  const [operation, setOperation] = useLessonInput('operation', 'pair')
   const values = useMemo(() => parseNumbers(input, [0, 7, 0, 3, 9, 2]), [input])
   const steps = useMemo(() => arraySteps(values, Number(target) || 0, operation), [operation, target, values])
   const code = operation === 'pair'
@@ -138,7 +141,7 @@ export function ArrayVisualizer({ onProgress }: { onProgress: () => void }) {
     : ['write = 0', 'for read in range(len(values)):', '    if values[read] != 0:', '        values[write], values[read] = (', '            values[read], values[write]', '        )', '        write += 1']
   return <AlgorithmPlayer title={operation === 'pair' ? 'Two pointers: pair sum' : 'Two pointers: move zeros'} subtitle="Pointer positions encode what has already been processed." code={code} steps={steps} complexity={{ time: operation === 'pair' ? 'O(n log n)' : 'O(n)', space: 'O(1)' }} onProgress={onProgress}
     controls={<><label>PATTERN<select value={operation} onChange={(event) => setOperation(event.target.value)}><option value="pair">Pair sum</option><option value="zeros">Move zeros</option></select></label><label>ARRAY<input value={input} onChange={(event) => setInput(event.target.value)} /></label>{operation === 'pair' && <label>TARGET<input value={target} onChange={(event) => setTarget(event.target.value)} /></label>}</>}
-    renderScene={({ state }) => <div className="array-scene">{state.values.map((value, index) => <div className={`array-bar ${state.left === index || state.right === index || state.read === index || state.write === index ? 'active' : ''} ${state.found && (state.left === index || state.right === index) ? 'success' : ''}`} style={{ height: `${52 + Math.abs(value) * 5}px` }} key={`${value}-${index}`}><strong>{value}</strong><small>{index}</small>{state.left === index && <span>L</span>}{state.right === index && <span>R</span>}{state.read === index && <span>READ</span>}{state.write === index && <i>WRITE</i>}</div>)}</div>}
+    renderScene={({ state }) => <div className="array-scene">{state.values.map((value, index) => <div className={`array-bar ${state.left === index || state.right === index || state.read === index || state.write === index ? 'active' : ''} ${state.found && (state.left === index || state.right === index) ? 'success' : ''}`} style={{ height: `${52 + Math.abs(value) * 5}px` }} key={index}><strong>{value}</strong><small>{index}</small>{state.left === index && <span>L</span>}{state.right === index && <span>R</span>}{state.read === index && <span>READ</span>}{state.write === index && <i>WRITE</i>}</div>)}</div>}
   />
 }
 
@@ -186,15 +189,32 @@ function stackSteps(input: string, operation: string): AnimationStep<StackState>
 }
 
 export function StackVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [operation, setOperation] = useState('brackets')
-  const [input, setInput] = useState('({[]})')
+  const { motionEnabled } = useStudioMotion()
+  const [operation, setOperation] = useLessonInput('operation', 'brackets')
+  const [input, setInput] = useLessonInput('input', '({[]})')
   const steps = useMemo(() => stackSteps(input, operation), [input, operation])
+  const stackHeight = useMemo(() => Math.max(245, steps.reduce((depth, frame) => Math.max(depth, frame.state.stack.length), 0) * 45 + 68), [steps])
   const code = operation === 'brackets'
     ? ['stack = []', 'for char in text:', '    if char in "([{":', '        stack.append(char)', '    else:', '        if not stack or stack[-1] != pairs[char]:', '            return False', '        stack.pop()', 'return not stack']
     : ['stack = []', 'answer = [-1] * len(values)', 'for i, value in enumerate(values):', '    while stack and values[stack[-1]] < value:', '        previous = stack.pop()', '        answer[previous] = value', '    stack.append(i)', 'return answer']
   return <AlgorithmPlayer title={operation === 'brackets' ? 'Stack: balanced brackets' : 'Monotonic stack: next greater'} subtitle="The top of the stack represents the next unresolved decision." code={code} steps={steps} complexity={{ time: 'O(n)', space: 'O(n)' }} onProgress={onProgress}
     controls={<><label>PATTERN<select value={operation} onChange={(event) => { setOperation(event.target.value); setInput(event.target.value === 'brackets' ? '({[]})' : '2, 1, 2, 4, 3') }}><option value="brackets">Balanced brackets</option><option value="greater">Next greater</option></select></label><label>INPUT<input value={input} onChange={(event) => setInput(event.target.value)} /></label></>}
-    renderScene={({ state }) => <div className="stack-scene"><div className="stream-row">{state.input.map((value, index) => <span className={state.index === index ? 'active' : ''} key={`${value}-${index}`}>{value}<small>{state.output[index] !== undefined && state.output.length ? state.output[index] ?? '−' : index}</small></span>)}</div><div className="stack-container"><span>TOP</span>{[...state.stack].reverse().map((value, index) => <b className={index === 0 ? 'active' : ''} key={`${value}-${index}`}>{value}</b>)}<i>STACK</i></div></div>}
+    renderScene={({ state }) => <div className="stack-scene">
+      <div className="stream-row">{state.input.map((value, index) => <span className={state.index === index ? 'active' : ''} key={index}>{value}<small>{state.output[index] !== undefined && state.output.length ? state.output[index] ?? '−' : index}</small></span>)}</div>
+      <div className="stack-container" style={{ height: stackHeight }}>
+        <span>TOP</span>
+        <AnimatePresence initial={false} mode="popLayout">
+          {state.stack.map((value, depth) => ({ value, depth })).reverse().map(({ value, depth }) =>
+            <m.b className={depth === state.stack.length - 1 ? 'active' : ''} key={`${depth}:${value}`} layout="position"
+              initial={motionEnabled ? { opacity: 0, y: -24, scale: .94 } : false} animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: motionEnabled ? -24 : 0, scale: motionEnabled ? .94 : 1 }} transition={{ duration: motionEnabled ? .28 : 0, ease: [.22, 1, .36, 1] }}>
+              {value}
+            </m.b>)}
+        </AnimatePresence>
+        {!state.stack.length && <em className="stack-empty">empty</em>}
+        <i>STACK</i>
+      </div>
+    </div>}
   />
 }
 
@@ -241,9 +261,9 @@ function windowSteps(input: string, target: number, operation: string): Animatio
 }
 
 export function WindowVisualizer({ onProgress }: { onProgress: () => void }) {
-  const [operation, setOperation] = useState('window')
-  const [input, setInput] = useState('abcabcbb')
-  const [target, setTarget] = useState('5')
+  const [operation, setOperation] = useLessonInput('operation', 'window')
+  const [input, setInput] = useLessonInput('input', 'abcabcbb')
+  const [target, setTarget] = useLessonInput('target', '5')
   const steps = useMemo(() => windowSteps(input, Number(target) || 0, operation), [input, operation, target])
   const code = operation === 'window'
     ? ['left = 0', 'counts = {}', 'for right, char in enumerate(text):', '    counts[char] = counts.get(char, 0) + 1', '    while counts[char] > 1:', '        counts[text[left]] -= 1', '        left += 1', '    best = max(best, right - left + 1)']

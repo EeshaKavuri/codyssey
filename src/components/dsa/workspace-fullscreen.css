@@ -1,0 +1,185 @@
+.studio-shell .workspace-shell .workspace-fullscreen-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.studio-shell .workspace-shell .workspace-fullscreen-button svg {
+  flex: none;
+}
+
+.studio-shell .workspace-shell .workspace-fullscreen-button[aria-pressed='true'] {
+  color: var(--lab-lime);
+  border-color: var(--lab-lime);
+}
+
+.studio-shell .workspace-shell .workspace-fullscreen-error {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--lab-red);
+  background: var(--lab-error-wash);
+  border: 1px solid var(--lab-red);
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+}
+
+.studio-shell .workspace-shell:fullscreen {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  margin: 0;
+  padding: 0 0 env(safe-area-inset-bottom, 0px);
+  border: 0;
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--lab-canvas);
+}
+
+.studio-shell .workspace-shell::backdrop {
+  background: #0b0f0e;
+}
+
+.studio-shell .workspace-shell:fullscreen .workspace-toolbar {
+  flex: none;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 0;
+  max-height: 45vh;
+  max-height: 45dvh;
+  padding: max(8px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 8px max(12px, env(safe-area-inset-left, 0px));
+  border-radius: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.studio-shell .workspace-shell:fullscreen .workspace-modes {
+  flex: none;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 4px;
+  scrollbar-width: thin;
+}
+
+.studio-shell .workspace-shell:fullscreen .workspace-modes button {
+  flex: none;
+  white-space: nowrap;
+}
+
+.studio-shell .workspace-shell:fullscreen .workspace-actions {
+  flex: none;
+  flex-wrap: wrap;
+}
+
+.studio-shell .workspace-shell:fullscreen .workspace-actions button {
+  flex: 0 0 auto;
+}
+
+.studio-shell .workspace-shell:fullscreen .workspace-fullscreen-error {
+  flex: none;
+}
+
+/* Scroll the panels, not a scaled canvas: node and port coordinates stay unchanged. */
+.studio-shell .workspace-shell:fullscreen .workspace-body {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  grid-template-columns: 205px minmax(0, 1fr) 260px;
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.studio-shell .workspace-shell:fullscreen :is(.workspace-inspector, .workspace-stage-wrap, .workspace-notes) {
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #53674e var(--lab-canvas);
+}
+
+.studio-shell .workspace-shell:fullscreen .workspace-notes {
+  display: block;
+  grid-column: auto;
+  border-top: 0;
+  border-left: 1px solid var(--lab-line);
+}
+
+.studio-shell .workspace-shell:fullscreen .workspace-notes label {
+  margin-top: 16px;
+}
+
+@media (max-width: 1120px) {
+  .studio-shell .workspace-shell:fullscreen .workspace-body {
+    grid-template-columns: 190px minmax(0, 1fr);
+    grid-template-rows: minmax(220px, 1fr) minmax(180px, .6fr);
+    overflow-y: auto;
+  }
+
+  .studio-shell .workspace-shell:fullscreen .workspace-notes {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-content: start;
+    gap: 12px;
+    border-left: 0;
+    border-top: 1px solid var(--lab-line);
+  }
+
+  .studio-shell .workspace-shell:fullscreen .workspace-notes > .section-kicker {
+    grid-column: 1 / -1;
+  }
+
+  .studio-shell .workspace-shell:fullscreen .workspace-notes label {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 730px) {
+  .studio-shell .workspace-shell:fullscreen .workspace-body {
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .studio-shell .workspace-shell:fullscreen :is(.workspace-inspector, .workspace-stage-wrap, .workspace-notes) {
+    flex: none;
+    max-height: none;
+  }
+
+  .studio-shell .workspace-shell:fullscreen .workspace-stage-wrap {
+    order: -1;
+    height: clamp(240px, 55vh, 440px);
+    height: clamp(240px, 55dvh, 440px);
+    border-bottom: 1px solid var(--lab-line);
+  }
+
+  .studio-shell .workspace-shell:fullscreen .workspace-inspector {
+    max-height: 320px;
+    border-right: 0;
+  }
+
+  .studio-shell .workspace-shell:fullscreen .workspace-notes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='on']) .studio-shell .workspace-shell .workspace-fullscreen-button {
+    transition: none;
+  }
+}
+
+html[data-motion='off'] .studio-shell .workspace-shell .workspace-fullscreen-button {
+  transition: none;
+}

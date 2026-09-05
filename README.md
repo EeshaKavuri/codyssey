@@ -30,7 +30,7 @@
 
 ## 🚀 Stop memorising. Start understanding.
 
-Codyssey turns passive interview notes into an experience you can **see, control and explore**.
+Codyssey is an **engineering workbench**, not a wall of notes. Follow one idea through **Understand → Predict → Experiment → Explain → Apply**, with a working diagram in the foreground and your notes and references beside it.
 
 Instead of memorising isolated solutions, you learn:
 
@@ -65,7 +65,7 @@ Instead of memorising isolated solutions, you learn:
     </td>
     <td>
       <h3>🏗️ HLD + LLD from zero</h3>
-      Move from web fundamentals and SOLID principles to distributed systems and complete interview designs.
+      Run 24 topic-specific experiments, from load balancing and replication lag to object invariants and concurrent reservations.
     </td>
   </tr>
   <tr>
@@ -75,7 +75,7 @@ Instead of memorising isolated solutions, you learn:
     </td>
     <td>
       <h3>💾 Private, local progress</h3>
-      No account or backend. Export and import progress whenever you move browsers or devices.
+      No account required. Resume your lesson stage, DSA inputs and trace position. Export and import your learning progress between devices.
     </td>
   </tr>
 </table>
@@ -84,14 +84,42 @@ Instead of memorising isolated solutions, you learn:
 
 ## 🧭 The Codyssey learning loop
 
+### A studio that reacts to you
+
+The midnight studio pairs acid-lime, cyan, and lavender learning tracks with expressive typography, pointer-responsive lighting, animated navigation, and tactile interactions. The **Concept Observatory** is playable: follow linked-list pointers, compare cache-hit and cache-miss routes, or swap a payment adapter behind one contract. These previews are illustrative and never award lesson progress.
+
+The same visual language continues through all lessons, the booking case, notes, references, and the spatial workspace. Short-laptop layouts compact the lesson chrome so trace playback stays reachable; mobile gets labeled navigation and locally scrollable diagrams instead of clipped pages.
+
+The header and navigation stay fixed while the document scrolls vertically. Header controls wrap when needed, with their measured height reserved above the content. Lesson tabs adapt to the space left by the menu, not just the browser width. Narrow screens use a fixed bottom dock and a scrollable menu; oversized diagrams and the drawing board scroll within their own regions rather than widening the page.
+
+Use **Motion** in the top bar to enable or disable interface animation without disabling experiments. It follows your system setting until you make an explicit choice; your choice then overrides the system and stays saved on this browser. Preview playback pauses in hidden tabs. The home, visual editor, and DSA experiment renderer are loaded on demand.
+
+Lesson focus mode retains the sidebar's expand/collapse arrow, and remembers your choice. Navigation and lesson tabs do not force the page back to the top. Algorithm canvases and variable slots keep a stable footprint between steps; inactive variables are explicitly labeled, and stack pushes and pops animate when Motion is on. Long explanations, values, and diagrams scroll inside their own labeled regions.
+
+The visual workspace ends its options toolbar with **Enter fullscreen / Exit fullscreen**. Fullscreen preserves the board, notes, and drag coordinates; the old workspace-specific walkthrough has been removed.
+
+Every lesson has two scenario-based reasoning checks. An experiment records **Practised**; experimenting and passing both checks records **Checkpoint cleared**. A playback click alone never completes a lesson. These are learning milestones, not claims of interview mastery.
+
+The home screen resumes your saved lesson and surfaces reasoning gaps for review. Cleared checkpoints return for recall after a day, without streaks or deadlines. Stages remain freely navigable. References live in **Read deeper**, and private **Reasoning notes** stay with each lesson.
+
+### The living system: two people booked the same seat
+
+Replay a double-booking race, switch to an authoritative atomic reservation, and follow the same state through three lenses:
+
+- **HLD:** requests, stale replicas, and the source of truth.
+- **LLD:** the `SeatHold` lifecycle and ownership guards.
+- **DSA:** a real expiration min-heap, including stale entries that must not release newer or confirmed reservations.
+
+These are educational, deterministic models, not production infrastructure. Design experiments and the booking case reset when you leave or reload them; lesson evidence and notes persist. DSA input, speed, and trace position are saved, and autoplay pauses when you leave Experiment.
+
 ```mermaid
 flowchart LR
-    A["🌍 Mental model"] --> B["🔍 Recognise"]
-    B --> C["🧠 Define invariant"]
-    C --> D["🎬 Trace execution"]
-    D --> E["🧩 Adapt blueprint"]
-    E --> F["💻 Solve"]
-    F --> G["🔁 Review"]
+    A["Understand"] --> B["Predict"]
+    B --> C["Experiment"]
+    C --> D["Explain"]
+    D --> E["Apply"]
+    E --> F["Solve"]
+    F --> G["Review"]
     G -. stronger recall .-> B
 
     style A fill:#d9f1e5,stroke:#174f3f,color:#174f3f
@@ -170,6 +198,17 @@ npm run preview
 
 The deployable output is generated in `dist`.
 
+Run `npm test` with Node 22.6 or newer for the deterministic experiment and learning-state regression checks.
+
+Browser layout regressions run against Chromium, Firefox, and WebKit:
+
+```powershell
+npx playwright install chromium firefox webkit
+npm run test:browser
+```
+
+The suite checks all routes from 240px to 2560px wide, both sidebar states, all 36 lessons on compact screens, touch-device rotation, short-screen menus, overlays, and workspace fullscreen. It checks actual control bounds and horizontal scrolling, not merely whether page overflow is hidden. Tests isolate browser storage and block visitor telemetry. The test runner starts a local Vite server when needed.
+
 ---
 
 ## 🌍 Deploy with GitHub Pages
@@ -193,10 +232,12 @@ Your learning progress remains in your browser:
 - Completed modules
 - Solved questions
 - Visual workspaces and reasoning notes
+- Lesson stage, checkpoint evidence, review queue, and private lesson notes
+- DSA inputs, playback speed, and trace position
 
 When visitor tracking is configured, Codyssey records one anonymous visit per browser session. Saving a display name also sends that chosen name to the private analytics table after showing an in-app disclosure. No study progress is uploaded.
 
-Use **Profile → Export progress** to create a JSON backup and **Import progress** to restore it elsewhere.
+Use **Profile → Export progress** to back up solved questions, module marks, and the new lesson state (including lesson notes). **Import progress** accepts both current and older backups. Earlier completion marks are preserved separately; they are not relabelled as cleared reasoning checkpoints. Freeform Visual Workspace boards remain device-local and are not included in this progress backup.
 
 > [!WARNING]
 > Clearing browser site data removes local progress unless you export a backup first.
@@ -209,9 +250,12 @@ Use **Profile → Export progress** to create a JSON backup and **Import progres
 src/
 ├── assets/                 Codyssey artwork
 ├── components/dsa/         Interactive traces and visual workspace
+├── components/design/      HLD and LLD experiment workbenches
+├── components/             Staged lessons, home, and connected booking case
 ├── data/                   DSA catalog, theory, curricula and resources
 ├── App.tsx                 Navigation, lessons and progress
-└── styles.css              Responsive UI and animations
+├── styles.css              Diagram geometry and shared UI
+└── workbench.css           Focused, responsive workbench theme
 
 scripts/                    DSA sheet processing tools
 .github/workflows/          GitHub Pages deployment

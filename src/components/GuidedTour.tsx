@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 export type TourStep = {
   selector: string
@@ -21,6 +21,8 @@ export function GuidedTour({ open, steps, index, setIndex, close, label, spotlig
 }) {
   const [rect, setRect] = useState<Rect | null>(null)
   const [hasPosition, setHasPosition] = useState(false)
+  const [popupHeight, setPopupHeight] = useState(235)
+  const popupRef = useRef<HTMLElement>(null)
   const step = steps[index]
 
   useEffect(() => {
@@ -30,27 +32,29 @@ export function GuidedTour({ open, steps, index, setIndex, close, label, spotlig
     let cancelled = false
     let attempts = 0
     const timers: number[] = []
-    const measure = (scroll = false) => {
+    const measure = () => {
       const element = document.querySelector<HTMLElement>(step.selector)
       if (!element) {
-        if (attempts++ < 20) timers.push(window.setTimeout(() => measure(scroll), 50))
+        if (attempts++ < 20) timers.push(window.setTimeout(measure, 50))
         return
       }
-      if (scroll) element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' })
       const bounds = element.getBoundingClientRect()
       if (cancelled) return
       setRect({ top: bounds.top, left: bounds.left, width: bounds.width, height: bounds.height })
       setHasPosition(true)
     }
 
-    timers.push(window.setTimeout(() => measure(true), 40))
+    timers.push(window.setTimeout(measure, 40))
     timers.push(window.setTimeout(() => measure(), 220))
     timers.push(window.setTimeout(() => measure(), 450))
+    const contentObserver = new MutationObserver(() => measure())
+    contentObserver.observe(document.body, { childList: true, subtree: true })
     const updatePosition = () => measure()
     window.addEventListener('resize', updatePosition)
     window.addEventListener('scroll', updatePosition, true)
     return () => {
       cancelled = true
+      contentObserver.disconnect()
       timers.forEach((timer) => window.clearTimeout(timer))
       window.removeEventListener('resize', updatePosition)
       window.removeEventListener('scroll', updatePosition, true)
@@ -62,6 +66,16 @@ export function GuidedTour({ open, steps, index, setIndex, close, label, spotlig
     setRect(null)
     setHasPosition(false)
   }, [open])
+
+  useLayoutEffect(() => {
+    if (!open || !hasPosition || !popupRef.current) return
+    const popup = popupRef.current
+    const measure = () => setPopupHeight(popup.getBoundingClientRect().height)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(popup)
+    return () => observer.disconnect()
+  }, [hasPosition, index, open])
 
   useEffect(() => {
     if (!open) return
@@ -77,14 +91,14 @@ export function GuidedTour({ open, steps, index, setIndex, close, label, spotlig
   if (!open || !step) return null
 
   const padding = 7
-  const focusRect = rect ? {
+  const targetVisible = rect && rect.top < window.innerHeight && rect.top + rect.height > 0 && rect.left < window.innerWidth && rect.left + rect.width > 0
+  const focusRect = targetVisible ? {
     top: Math.max(5, rect.top - padding),
     left: Math.max(5, rect.left - padding),
     width: Math.min(window.innerWidth - 10, rect.width + padding * 2),
     height: Math.min(window.innerHeight - 10, rect.height + padding * 2),
   } : null
   const popupWidth = Math.min(330, window.innerWidth - 24)
-  const popupHeight = 235
   const gap = 18
   const viewportMargin = 12
   const right = focusRect ? focusRect.left + focusRect.width : 0
@@ -126,7 +140,7 @@ export function GuidedTour({ open, steps, index, setIndex, close, label, spotlig
   return <div className={`coach-tour ${spotlight ? '' : 'pointer-only'}`} aria-live="polite">
     {spotlight && focusRect && <div className="coach-spotlight" style={focusRect} />}
     {!spotlight && hasPosition && anchorStyle && <span className="coach-anchor" style={anchorStyle} />}
-    {hasPosition && <section className={`coach-popup ${placement}`} style={{ top: boundedTop, left: boundedLeft, width: popupWidth }} role="dialog" aria-label={label}>
+    {hasPosition && <section ref={popupRef} className={`coach-popup ${placement}`} style={{ top: boundedTop, left: boundedLeft, width: popupWidth }} role="dialog" aria-label={label}>
       <div className="coach-heading"><span>{label} · {index + 1}/{steps.length}</span><button onClick={close} aria-label="Close walkthrough">×</button></div>
       <h3>{step.title}</h3>
       <p>{step.detail}</p>
