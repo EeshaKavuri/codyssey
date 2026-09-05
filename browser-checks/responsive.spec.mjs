@@ -67,8 +67,20 @@ async function fitIssues(page) {
         if (['hidden', 'clip'].includes(style.overflowX) && (r.left < bounds.left - 1 || r.right > bounds.right + 1)) clipped = true
       }
       if (localScroll) continue
-      if (r.left < -1 || r.right > width + 1 || clipped) failures.push(`Clipped or out of bounds: ${identify(e)}`)
-      if (e.tagName === 'BUTTON' && e.scrollWidth > e.clientWidth + 1) failures.push(`Button content overflows: ${identify(e)}`)
+      const isClippedMotionReveal = document.documentElement.dataset.motion === 'on' && e.matches('.headline-line > span')
+      if (r.left < -1 || r.right > width + 1 || (clipped && !isClippedMotionReveal)) failures.push(`Clipped or out of bounds: ${identify(e)}`)
+      if (e.tagName === 'BUTTON' && e.scrollWidth > e.clientWidth + 1) {
+        const buttonBounds = e.getBoundingClientRect()
+        const hasOverflowingContent = [...e.children].some(child => {
+          const style = getComputedStyle(child)
+          if (style.position === 'absolute' || style.display === 'none' || style.visibility === 'hidden') return false
+          const childBounds = child.getBoundingClientRect()
+          if (!childBounds.width || !childBounds.height) return false
+          return childBounds.left < buttonBounds.left - 1 || childBounds.right > buttonBounds.right + 1
+        })
+        const hasDirectText = [...e.childNodes].some(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim())
+        if (hasOverflowingContent || hasDirectText) failures.push(`Button content overflows: ${identify(e)}`)
+      }
     }
     return failures
   })
@@ -235,5 +247,34 @@ test('fixed shell survives wheel input and workspace fullscreen', async ({ page 
     await page.getByRole('button', { name: 'Exit fullscreen', exact: true }).click()
     await expect.poll(() => page.evaluate(() => document.fullscreenElement === null)).toBe(true)
     expect(await fitIssues(page)).toEqual([])
+  }
+})
+
+test('motion and rapid navigation never create page-level horizontal scrolling', async ({ page }) => {
+  await page.locator('.motion-toggle').click()
+  await expect(page.locator('html')).toHaveAttribute('data-motion', 'on')
+  for (const width of [240, 280, 320, 390, 780, 781, 820, 1024]) {
+    await page.setViewportSize({ width, height: 620 })
+    for (const route of ['home', 'dsa', 'workspace', 'booking', 'roadmap']) {
+      await openRoute(page, route)
+      if (route === 'dsa') {
+        for (const stage of stages) {
+          await openStage(page, stage)
+          expect(await fitIssues(page)).toEqual([])
+        }
+      } else {
+        expect(await fitIssues(page)).toEqual([])
+      }
+      await page.evaluate(() => {
+        window.scrollBy(10000, 0)
+        document.documentElement.scrollLeft = 10000
+        document.body.scrollLeft = 10000
+      })
+      expect(await page.evaluate(() => ({
+        window: scrollX,
+        root: document.documentElement.scrollLeft,
+        body: document.body.scrollLeft,
+      }))).toEqual({ window: 0, root: 0, body: 0 })
+    }
   }
 })

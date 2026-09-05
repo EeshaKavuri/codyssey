@@ -1,28 +1,28 @@
 .learning-constellation {
-  --lc-accent: #c8fb7a;
+  --lc-accent: var(--color-accent);
   --lc-accent-rgb: 200, 251, 122;
   position: relative;
   isolation: isolate;
   width: 100%;
   min-width: 0;
   overflow: hidden;
-  color: #eef3eb;
-  border: 1px solid #354234;
-  border-radius: 20px;
+  color: var(--color-text);
+  border: .0625rem solid #354234;
+  border-radius: 1.25rem;
   background: linear-gradient(138deg, rgb(31 42 32 / 94%), rgb(13 20 16 / 98%) 48%, #111813);
-  box-shadow: 0 28px 70px #0005, inset 0 1px 0 #ffffff08;
+  box-shadow: 0 1.75rem 4.375rem var(--color-black-a33), inset 0 .0625rem 0 #ffffff08;
   font-family: 'Manrope', sans-serif;
   text-align: left;
   container-type: inline-size;
 }
 
 .learning-constellation.learning-constellation--hld {
-  --lc-accent: #8bdce9;
+  --lc-accent: var(--color-cyan);
   --lc-accent-rgb: 139, 220, 233;
 }
 
 .learning-constellation.learning-constellation--lld {
-  --lc-accent: #c0b6ff;
+  --lc-accent: var(--color-lavender);
   --lc-accent-rgb: 192, 182, 255;
 }
 
@@ -47,8 +47,8 @@
 }
 
 .learning-constellation button:focus-visible {
-  outline: 2px solid var(--lc-accent);
-  outline-offset: -3px;
+  outline: .125rem solid var(--lc-accent);
+  outline-offset: -.1875rem;
 }
 
 .learning-constellation button:disabled {
@@ -59,45 +59,45 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-  min-height: 32px;
-  padding: 8px 19px 6px;
+  gap: .5rem;
+  min-height: 2rem;
+  padding: .5rem 1.1875rem .375rem;
   color: #a8b4a8;
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
+  font-size: .5rem;
   font-weight: 400;
-  letter-spacing: 1px;
+  letter-spacing: .0625rem;
 }
 
 .learning-constellation .lc-topline > span {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
+  gap: .4375rem;
 }
 
 .learning-constellation .lc-status-light {
-  width: 5px;
-  height: 5px;
+  width: .3125rem;
+  height: .3125rem;
   flex: 0 0 auto;
   border-radius: 50%;
   background: var(--lc-accent);
-  box-shadow: 0 0 9px rgba(var(--lc-accent-rgb), .4);
+  box-shadow: 0 0 .5625rem rgba(var(--lc-accent-rgb), .4);
 }
 
 .learning-constellation .lc-preview-label {
   color: #87968b;
-  font-size: 7px;
-  letter-spacing: .6px;
+  font-size: .4375rem;
+  letter-spacing: .0375rem;
 }
 
 .learning-constellation .lc-track-selector {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 3px;
-  margin: 0 12px;
-  padding: 3px;
-  border: 1px solid #ffffff09;
-  border-radius: 10px;
+  gap: .1875rem;
+  margin: 0 .75rem;
+  padding: .1875rem;
+  border: .0625rem solid #ffffff09;
+  border-radius: .625rem;
   background: #080e0b87;
 }
 
@@ -105,17 +105,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 39px;
-  padding: 8px 9px;
-  border: 1px solid transparent;
-  border-radius: 7px;
+  gap: .5rem;
+  min-height: 2.4375rem;
+  padding: .5rem .5625rem;
+  border: .0625rem solid transparent;
+  border-radius: .4375rem;
   color: #91a092;
   transition: color .2s, background .2s, border-color .2s;
 }
 
 .learning-constellation .lc-track-selector button:hover {
-  color: #eef3eb;
+  color: var(--color-text);
   background: #ffffff06;
 }
 
@@ -123,65 +123,65 @@
   color: var(--lc-accent);
   border-color: rgba(var(--lc-accent-rgb), .18);
   background: linear-gradient(110deg, rgba(var(--lc-accent-rgb), .1), rgba(var(--lc-accent-rgb), .04));
-  box-shadow: 0 1px 3px #0003, inset 0 1px 0 #ffffff07;
+  box-shadow: 0 .0625rem .1875rem var(--color-black-a20), inset 0 .0625rem 0 #ffffff07;
 }
 
 .learning-constellation .lc-track-number {
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
+  font-size: .5rem;
   opacity: .5;
 }
 
 .learning-constellation .lc-track-name {
-  font-size: 11px;
+  font-size: .6875rem;
   font-weight: 700;
 }
 
 .learning-constellation .lc-track-code {
   display: none;
   font-family: 'DM Mono', monospace;
-  font-size: 11px;
+  font-size: .6875rem;
 }
 
 .learning-constellation .lc-configuration {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 43px;
-  padding: 3px 21px;
+  gap: .625rem;
+  min-height: 2.6875rem;
+  padding: .1875rem 1.3125rem;
 }
 
 .learning-constellation .lc-config-label {
-  color: #9aa99e;
+  color: var(--color-text-muted);
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
-  letter-spacing: .7px;
+  font-size: .5rem;
+  letter-spacing: .04375rem;
   white-space: nowrap;
 }
 
 .learning-constellation .lc-options {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: .1875rem;
 }
 
 .learning-constellation .lc-options button {
   position: relative;
-  min-width: 32px;
-  min-height: 36px;
-  padding: 6px 9px;
-  color: #9aa99e;
+  min-width: 2rem;
+  min-height: 2.25rem;
+  padding: .375rem .5625rem;
+  color: var(--color-text-muted);
   font-family: 'DM Mono', monospace;
-  font-size: 10px;
+  font-size: .625rem;
   transition: color .2s;
 }
 
 .learning-constellation .lc-options button::before {
   position: absolute;
   z-index: -1;
-  inset: 6px 0;
-  border: 1px solid transparent;
-  border-radius: 5px;
+  inset: .375rem 0;
+  border: .0625rem solid transparent;
+  border-radius: .3125rem;
   background: #ffffff04;
   content: '';
   transition: background .2s, border-color .2s;
@@ -197,25 +197,25 @@
 }
 
 .learning-constellation .lc-options button:hover {
-  color: #eef3eb;
+  color: var(--color-text);
 }
 
 .learning-constellation .lc-config-hint {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: .3125rem;
   margin-left: auto;
   color: #7e9082;
-  font-size: 8px;
+  font-size: .5rem;
 }
 
 .learning-constellation .lc-board {
   position: relative;
-  height: 205px;
-  margin: 0 10px;
+  height: 12.8125rem;
+  margin: 0 .625rem;
   overflow: hidden;
-  border: 1px solid #ffffff08;
-  border-radius: 10px;
+  border: .0625rem solid #ffffff08;
+  border-radius: .625rem;
   background: radial-gradient(ellipse at 55% 46%, rgba(var(--lc-accent-rgb), .045), transparent 70%), #0a100d80;
 }
 
@@ -224,9 +224,9 @@
   z-index: 0;
   inset: -70% -25%;
   opacity: .44;
-  background-image: linear-gradient(#637c671d 1px, transparent 1px), linear-gradient(90deg, #637c671d 1px, transparent 1px);
-  background-size: 32px 32px;
-  transform: perspective(480px) rotateX(47deg) rotateZ(-21deg);
+  background-image: linear-gradient(#637c671d .0625rem, transparent .0625rem), linear-gradient(90deg, #637c671d .0625rem, transparent .0625rem);
+  background-size: 2rem 2rem;
+  transform: perspective(30rem) rotateX(47deg) rotateZ(-21deg);
   mask-image: radial-gradient(ellipse at 50% 50%, #000 4%, transparent 58%);
   pointer-events: none;
 }
@@ -238,17 +238,17 @@
   z-index: 1;
   color: #778a7c;
   font-family: 'DM Mono', monospace;
-  font-size: 7px;
-  letter-spacing: .8px;
+  font-size: .4375rem;
+  letter-spacing: .05rem;
   pointer-events: none;
 }
 
 .learning-constellation .lc-board-label {
   display: flex;
   align-items: center;
-  gap: 5px;
-  top: 12px;
-  left: 13px;
+  gap: .3125rem;
+  top: .75rem;
+  left: .8125rem;
 }
 
 .learning-constellation .lc-trace--hld .lc-board-label,
@@ -257,14 +257,14 @@
 }
 
 .learning-constellation .lc-mini-square {
-  width: 4px;
-  height: 4px;
-  border: 1px solid #a0b19a;
+  width: .25rem;
+  height: .25rem;
+  border: .0625rem solid #a0b19a;
 }
 
 .learning-constellation .lc-board-coordinate {
-  top: 12px;
-  right: 13px;
+  top: .75rem;
+  right: .8125rem;
   color: #8d9e8b;
 }
 
@@ -272,7 +272,7 @@
   position: absolute;
   color: #90ac852c;
   font-family: 'DM Mono', monospace;
-  font-size: 15px;
+  font-size: .9375rem;
 }
 
 .learning-constellation .lc-board-cross--one {
@@ -288,12 +288,12 @@
 .learning-constellation .lc-board-footer {
   display: flex;
   justify-content: space-between;
-  right: 13px;
-  bottom: 10px;
-  left: 13px;
+  right: .8125rem;
+  bottom: .625rem;
+  left: .8125rem;
   color: #758778;
-  font-size: 6px;
-  letter-spacing: .7px;
+  font-size: .375rem;
+  letter-spacing: .04375rem;
 }
 
 .learning-constellation .lc-wires {
@@ -307,13 +307,13 @@
 .learning-constellation .lc-wire-shadow {
   fill: none;
   stroke: #02060490;
-  stroke-width: 5px;
+  stroke-width: .3125rem;
 }
 
 .learning-constellation .lc-wire {
   fill: none;
   stroke: #48614b99;
-  stroke-width: 1px;
+  stroke-width: .0625rem;
   transition: stroke .25s;
 }
 
@@ -324,31 +324,31 @@
 .learning-constellation .lc-wire-junction {
   fill: #344d3a;
   stroke: #102016;
-  stroke-width: 1px;
+  stroke-width: .0625rem;
 }
 
 .learning-constellation .lc-signal,
 .learning-constellation .lc-signal-glow {
   fill: none;
-  stroke-width: 1.5px;
+  stroke-width: .09375rem;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .learning-constellation .lc-signal-glow {
   stroke: var(--lc-accent);
-  stroke-width: 5px;
+  stroke-width: .3125rem;
 }
 
 .learning-constellation .lc-packet {
   position: absolute;
   z-index: 4;
-  width: 6px;
-  height: 6px;
-  border: 1px solid #fff;
+  width: .375rem;
+  height: .375rem;
+  border: .0625rem solid #fff;
   border-radius: 50%;
   background: var(--lc-accent);
-  box-shadow: 0 0 8px var(--lc-accent), 0 0 17px rgba(var(--lc-accent-rgb), .8);
+  box-shadow: 0 0 .5rem var(--lc-accent), 0 0 1.0625rem rgba(var(--lc-accent-rgb), .8);
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
@@ -356,20 +356,20 @@
 .learning-constellation .lc-node {
   position: absolute;
   z-index: 3;
-  width: 93px;
+  width: 5.8125rem;
   transform: translate(-50%, -50%);
   transition: opacity .25s, filter .25s;
 }
 
 .learning-constellation .lc-node-eyebrow {
   position: absolute;
-  right: -8px;
-  bottom: calc(100% + 5px);
-  left: -8px;
+  right: -.5rem;
+  bottom: calc(100% + .3125rem);
+  left: -.5rem;
   color: #8b9d8e;
   font-family: 'DM Mono', monospace;
-  font-size: 6px;
-  letter-spacing: .8px;
+  font-size: .375rem;
+  letter-spacing: .05rem;
   text-align: center;
   white-space: nowrap;
 }
@@ -380,22 +380,22 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  min-height: 73px;
-  padding: 10px 3px 9px;
-  border: 1px solid #40523f;
-  border-radius: 9px;
+  gap: .3125rem;
+  min-height: 4.5625rem;
+  padding: .625rem .1875rem .5625rem;
+  border: .0625rem solid #40523f;
+  border-radius: .5625rem;
   background: linear-gradient(145deg, #263326ed, #152017f5 65%);
-  box-shadow: 0 6px 0 -1px #0b130e, 0 6px 0 #2e4030, 0 13px 14px #0005, inset 0 1px 0 #ffffff0a;
+  box-shadow: 0 .375rem 0 -.0625rem #0b130e, 0 .375rem 0 #2e4030, 0 .8125rem .875rem var(--color-black-a33), inset 0 .0625rem 0 var(--color-white-a04);
   transition: border-color .25s, box-shadow .25s, background .25s, transform .25s;
 }
 
 .learning-constellation .lc-node-face::before {
   position: absolute;
-  inset: -1px;
-  border: 1px solid transparent;
+  inset: -.0625rem;
+  border: .0625rem solid transparent;
   border-radius: inherit;
-  background: linear-gradient(140deg, #ffffff13, transparent 45%) border-box;
+  background: linear-gradient(140deg, var(--color-white-a13), transparent 45%) border-box;
   mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
   mask-composite: exclude;
   pointer-events: none;
@@ -410,21 +410,21 @@
   max-width: 100%;
   color: #dee8dc;
   font-family: 'Space Grotesk', sans-serif;
-  font-size: 11px;
+  font-size: .6875rem;
   font-weight: 500;
   line-height: 1.1;
-  letter-spacing: -.25px;
+  letter-spacing: -.01563rem;
   white-space: nowrap;
 }
 
 .learning-constellation .lc-node-sub {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: .125rem;
   max-width: 100%;
   color: #92a492;
   font-family: 'DM Mono', monospace;
-  font-size: 6px;
+  font-size: .375rem;
   line-height: 1.2;
   white-space: nowrap;
 }
@@ -432,11 +432,11 @@
 .learning-constellation .lc-node-port {
   position: absolute;
   z-index: 1;
-  top: calc(50% - 2px);
-  right: -3px;
-  width: 5px;
-  height: 5px;
-  border: 1px solid #4e694c;
+  top: calc(50% - .125rem);
+  right: -.1875rem;
+  width: .3125rem;
+  height: .3125rem;
+  border: .0625rem solid #4e694c;
   border-radius: 50%;
   background: #152216;
 }
@@ -444,8 +444,8 @@
 .learning-constellation .lc-node.is-active .lc-node-face {
   border-color: rgba(var(--lc-accent-rgb), .72);
   background: linear-gradient(145deg, rgba(var(--lc-accent-rgb), .15), #162117 80%);
-  box-shadow: 0 6px 0 -1px #122013, 0 6px 0 rgba(var(--lc-accent-rgb), .3), 0 13px 17px #0005, 0 0 26px rgba(var(--lc-accent-rgb), .075), inset 0 1px 0 #ffffff13;
-  transform: translateY(-3px);
+  box-shadow: 0 .375rem 0 -.0625rem #122013, 0 .375rem 0 rgba(var(--lc-accent-rgb), .3), 0 .8125rem 1.0625rem var(--color-black-a33), 0 0 1.625rem rgba(var(--lc-accent-rgb), .075), inset 0 .0625rem 0 var(--color-white-a13);
+  transform: translateY(-.1875rem);
 }
 
 .learning-constellation .lc-node.is-active .lc-node-eyebrow,
@@ -458,7 +458,7 @@
 .learning-constellation .lc-node.is-active .lc-node-port {
   border-color: var(--lc-accent);
   background: var(--lc-accent);
-  box-shadow: 0 0 9px rgba(var(--lc-accent-rgb), .8);
+  box-shadow: 0 0 .5625rem rgba(var(--lc-accent-rgb), .8);
 }
 
 .learning-constellation .lc-node.is-visited .lc-node-face {
@@ -471,29 +471,29 @@
 }
 
 .learning-constellation .lc-trace--dsa .lc-node {
-  width: 77px;
+  width: 4.8125rem;
 }
 
 .learning-constellation .lc-trace--dsa .lc-node-face {
-  gap: 8px;
-  min-height: 75px;
-  padding: 13px 4px 11px;
-  border-radius: 10px;
+  gap: .5rem;
+  min-height: 4.6875rem;
+  padding: .8125rem .25rem .6875rem;
+  border-radius: .625rem;
 }
 
 .learning-constellation .lc-trace--dsa .lc-node-eyebrow {
-  top: calc(100% + 12px);
+  top: calc(100% + .75rem);
   bottom: auto;
 }
 
 .learning-constellation .lc-trace--dsa .lc-node strong {
-  font-size: 32px;
+  font-size: 2rem;
   font-weight: 400;
-  letter-spacing: -1.4px;
+  letter-spacing: -.0875rem;
 }
 
 .learning-constellation .lc-trace--dsa .lc-node-sub {
-  font-size: 8px;
+  font-size: .5rem;
 }
 
 .learning-constellation .lc-pointer {
@@ -503,27 +503,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: .25rem;
   transform: translateX(-50%);
   color: var(--lc-accent);
   font-family: 'DM Mono', monospace;
-  font-size: 7px;
-  letter-spacing: .7px;
+  font-size: .4375rem;
+  letter-spacing: .04375rem;
 }
 
 .learning-constellation .lc-pointer span {
-  padding: 3px 6px;
-  border: 1px solid rgba(var(--lc-accent-rgb), .18);
-  border-radius: 4px;
+  padding: .1875rem .375rem;
+  border: .0625rem solid rgba(var(--lc-accent-rgb), .18);
+  border-radius: .25rem;
   background: #172217;
 }
 
 .learning-constellation .lc-pointer i {
   width: 0;
   height: 0;
-  border-top: 4px solid var(--lc-accent);
-  border-right: 3px solid transparent;
-  border-left: 3px solid transparent;
+  border-top: .25rem solid var(--lc-accent);
+  border-right: .1875rem solid transparent;
+  border-left: .1875rem solid transparent;
 }
 
 .learning-constellation .lc-list-annotations {
@@ -536,13 +536,13 @@
   justify-content: space-between;
   color: #8ca18d;
   font-family: 'DM Mono', monospace;
-  font-size: 7px;
+  font-size: .4375rem;
 }
 
 .learning-constellation .lc-list-annotations > span:nth-child(2) {
   color: #748e77;
   font-family: 'Manrope', sans-serif;
-  font-size: 8px;
+  font-size: .5rem;
 }
 
 .learning-constellation .lc-route-note,
@@ -550,9 +550,9 @@
   position: absolute;
   color: #8ca397;
   font-family: 'DM Mono', monospace;
-  font-size: 7px;
+  font-size: .4375rem;
   line-height: 1.9;
-  letter-spacing: .4px;
+  letter-spacing: .025rem;
 }
 
 .learning-constellation .lc-route-note {
@@ -568,42 +568,42 @@
 
 .learning-constellation .lc-contract-note strong {
   color: #a9b7a8;
-  font-size: 6px;
+  font-size: .375rem;
   font-weight: 400;
 }
 
 .learning-constellation .lc-trace--lld .lc-node {
-  width: 101px;
+  width: 6.3125rem;
 }
 
 .learning-constellation .lc-trace--lld .lc-node strong {
-  font-size: 10px;
+  font-size: .625rem;
 }
 
 .learning-constellation .lc-trace--lld .lc-node-face {
-  min-height: 69px;
+  min-height: 4.3125rem;
 }
 
 .learning-constellation .lc-readout {
   display: flex;
   align-items: flex-start;
-  gap: 11px;
-  min-height: 65px;
-  padding: 11px 21px 8px;
+  gap: .6875rem;
+  min-height: 4.0625rem;
+  padding: .6875rem 1.3125rem .5rem;
 }
 
 .learning-constellation .lc-readout-marker {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: 0 0 27px;
-  height: 27px;
-  border: 1px solid rgba(var(--lc-accent-rgb), .22);
-  border-radius: 7px;
+  flex: 0 0 1.6875rem;
+  height: 1.6875rem;
+  border: .0625rem solid rgba(var(--lc-accent-rgb), .22);
+  border-radius: .4375rem;
   color: var(--lc-accent);
   background: rgba(var(--lc-accent-rgb), .04);
   font-family: 'DM Mono', monospace;
-  font-size: 10px;
+  font-size: .625rem;
 }
 
 .learning-constellation .lc-readout-copy {
@@ -613,30 +613,30 @@
 
 .learning-constellation .lc-readout-copy strong {
   display: block;
-  padding-top: 1px;
+  padding-top: .0625rem;
   color: #e6eee2;
-  font-size: 12px;
+  font-size: .75rem;
   font-weight: 600;
   line-height: 1.45;
-  letter-spacing: -.1px;
+  letter-spacing: -.00625rem;
 }
 
 .learning-constellation .lc-readout-copy p {
-  margin: 4px 0 0;
-  color: #9aa99e;
-  font-size: 10px;
+  margin: .25rem 0 0;
+  color: var(--color-text-muted);
+  font-size: .625rem;
   line-height: 1.6;
 }
 
 .learning-constellation .lc-console {
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-height: 27px;
-  margin: 0 20px 3px;
-  padding: 3px 9px;
-  border: 1px solid #ffffff07;
-  border-radius: 5px;
+  gap: .5rem;
+  min-height: 1.6875rem;
+  margin: 0 1.25rem .1875rem;
+  padding: .1875rem .5625rem;
+  border: .0625rem solid #ffffff07;
+  border-radius: .3125rem;
   background: #07100963;
   color: var(--lc-accent);
 }
@@ -644,13 +644,13 @@
 .learning-constellation .lc-console > span:first-child {
   color: #7a967b;
   font-family: 'DM Mono', monospace;
-  font-size: 14px;
+  font-size: .875rem;
 }
 
 .learning-constellation .lc-console code {
   overflow: hidden;
   font-family: 'DM Mono', monospace;
-  font-size: 8px;
+  font-size: .5rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -659,47 +659,47 @@
   margin-left: auto;
   color: #839683;
   font-family: 'DM Mono', monospace;
-  font-size: 6px;
-  letter-spacing: .7px;
+  font-size: .375rem;
+  letter-spacing: .04375rem;
 }
 
 .learning-constellation .lc-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 17px 10px;
+  gap: .375rem;
+  padding: .375rem 1.0625rem .625rem;
 }
 
 .learning-constellation .lc-actions button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  min-height: 38px;
-  border: 1px solid transparent;
-  border-radius: 7px;
-  font-size: 10px;
+  gap: .4375rem;
+  min-height: 2.375rem;
+  border: .0625rem solid transparent;
+  border-radius: .4375rem;
+  font-size: .625rem;
   font-weight: 700;
   transition: background .2s, border-color .2s, transform .2s, opacity .2s;
 }
 
 .learning-constellation .lc-actions .lc-run {
-  min-width: 134px;
-  padding: 9px 14px;
+  min-width: 8.375rem;
+  padding: .5625rem .875rem;
   color: #15200e;
   border-color: var(--lc-accent);
   background: var(--lc-accent);
-  box-shadow: 0 3px 10px rgba(var(--lc-accent-rgb), .04), inset 0 1px 0 #ffffff40;
+  box-shadow: 0 .1875rem .625rem rgba(var(--lc-accent-rgb), .04), inset 0 .0625rem 0 #ffffff40;
 }
 
 .learning-constellation .lc-run:not(:disabled):hover {
   filter: brightness(1.07);
-  transform: translateY(-1px);
+  transform: translateY(-.0625rem);
 }
 
 .learning-constellation .lc-run:focus-visible {
   outline-color: #10180e;
-  outline-offset: -4px;
+  outline-offset: -.25rem;
 }
 
 .learning-constellation .lc-actions .lc-run:disabled {
@@ -707,9 +707,9 @@
 }
 
 .learning-constellation .lc-actions .lc-reset {
-  width: 38px;
-  flex: 0 0 38px;
-  padding: 6px;
+  width: 2.375rem;
+  flex: 0 0 2.375rem;
+  padding: .375rem;
   color: #a4b2a3;
   border-color: #ffffff09;
 }
@@ -726,9 +726,9 @@
 
 .learning-constellation .lc-actions .lc-open {
   flex: 0 0 auto;
-  gap: 6px;
+  gap: .375rem;
   margin-left: auto;
-  padding: 8px 7px;
+  padding: .5rem .4375rem;
   color: #d6e4d1;
   white-space: nowrap;
 }
@@ -743,10 +743,10 @@
 }
 
 .learning-constellation .lc-open:hover svg {
-  transform: translate(1px, -1px);
+  transform: translate(.0625rem, -.0625rem);
 }
 
-@container (max-width: 460px) {
+@container (max-width: 28.75rem) {
   .learning-constellation .lc-track-number,
   .learning-constellation .lc-topline,
   .learning-constellation .lc-preview-label,
@@ -758,61 +758,61 @@
   }
 
   .learning-constellation .lc-track-selector {
-    margin-top: 10px;
+    margin-top: .625rem;
   }
 
   .learning-constellation .lc-board {
-    height: 178px;
+    height: 11.125rem;
   }
 
   .learning-constellation .lc-node {
-    width: 77px;
+    width: 4.8125rem;
   }
 
   .learning-constellation .lc-node-face {
-    min-height: 67px;
+    min-height: 4.1875rem;
   }
 
   .learning-constellation .lc-trace--dsa .lc-node {
-    width: 63px;
+    width: 3.9375rem;
   }
 
   .learning-constellation .lc-trace--dsa .lc-node-face {
-    min-height: 67px;
+    min-height: 4.1875rem;
   }
 
   .learning-constellation .lc-trace--dsa .lc-node-eyebrow {
-    top: calc(100% + 10px);
+    top: calc(100% + .625rem);
   }
 
   .learning-constellation .lc-trace--dsa .lc-node strong {
-    font-size: 28px;
+    font-size: 1.75rem;
   }
 
   .learning-constellation .lc-trace--lld .lc-node {
-    width: 81px;
+    width: 5.0625rem;
   }
 
   .learning-constellation .lc-trace--lld .lc-node strong {
-    font-size: 9px;
+    font-size: .5625rem;
   }
 
   .learning-constellation .lc-node-eyebrow {
-    font-size: 5px;
+    font-size: .3125rem;
   }
 
   .learning-constellation .lc-readout {
-    min-height: 66px;
-    padding-right: 15px;
-    padding-left: 15px;
+    min-height: 4.125rem;
+    padding-right: .9375rem;
+    padding-left: .9375rem;
   }
 
   .learning-constellation .lc-readout-copy strong {
-    font-size: 11px;
+    font-size: .6875rem;
   }
 
   .learning-constellation .lc-readout-copy p {
-    font-size: 9px;
+    font-size: .5625rem;
   }
 
   .learning-constellation .lc-pointer {
@@ -824,7 +824,7 @@
   }
 }
 
-@container (max-width: 350px) {
+@container (max-width: 21.875rem) {
   .learning-constellation .lc-topline {
     display: none;
   }
@@ -840,184 +840,184 @@
   }
 
   .learning-constellation .lc-track-selector {
-    margin: 8px 8px 0;
+    margin: .5rem .5rem 0;
   }
 
   .learning-constellation .lc-track-selector button {
-    gap: 6px;
-    min-height: 37px;
-    padding: 7px 3px;
+    gap: .375rem;
+    min-height: 2.3125rem;
+    padding: .4375rem .1875rem;
   }
 
   .learning-constellation .lc-configuration {
-    gap: 8px;
-    min-height: 39px;
-    padding: 1px 14px;
+    gap: .5rem;
+    min-height: 2.4375rem;
+    padding: .0625rem .875rem;
   }
 
   .learning-constellation .lc-config-label {
-    font-size: 7px;
+    font-size: .4375rem;
   }
 
   .learning-constellation .lc-board {
-    height: 175px;
-    margin: 0 6px;
+    height: 10.9375rem;
+    margin: 0 .375rem;
   }
 
   .learning-constellation .lc-board-label {
-    top: 10px;
-    left: 9px;
-    font-size: 5px;
+    top: .625rem;
+    left: .5625rem;
+    font-size: .3125rem;
   }
 
   .learning-constellation .lc-board-footer {
-    right: 8px;
-    bottom: 9px;
-    left: 8px;
-    font-size: 5px;
+    right: .5rem;
+    bottom: .5625rem;
+    left: .5rem;
+    font-size: .3125rem;
   }
 
   .learning-constellation .lc-node {
-    width: 65px;
+    width: 4.0625rem;
   }
 
   .learning-constellation .lc-node-face {
-    gap: 4px;
-    min-height: 58px;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    border-radius: 7px;
+    gap: .25rem;
+    min-height: 3.625rem;
+    padding-top: .5rem;
+    padding-bottom: .5rem;
+    border-radius: .4375rem;
   }
 
   .learning-constellation .lc-node strong {
-    font-size: 10px;
+    font-size: .625rem;
   }
 
   .learning-constellation .lc-node-sub {
-    font-size: 5px;
+    font-size: .3125rem;
   }
 
   .learning-constellation .lc-node-icon {
-    width: 15px;
-    height: 15px;
+    width: .9375rem;
+    height: .9375rem;
   }
 
   .learning-constellation .lc-node-eyebrow {
-    bottom: calc(100% + 4px);
-    font-size: 4.5px;
-    letter-spacing: .4px;
+    bottom: calc(100% + .25rem);
+    font-size: .28125rem;
+    letter-spacing: .025rem;
   }
 
   .learning-constellation .lc-trace--dsa .lc-node {
-    width: 53px;
+    width: 3.3125rem;
   }
 
   .learning-constellation .lc-trace--dsa .lc-node-face {
-    gap: 6px;
-    min-height: 62px;
-    padding: 10px 2px;
+    gap: .375rem;
+    min-height: 3.875rem;
+    padding: .625rem .125rem;
   }
 
   .learning-constellation .lc-trace--dsa .lc-node strong {
-    font-size: 26px;
+    font-size: 1.625rem;
   }
 
   .learning-constellation .lc-trace--dsa .lc-node-sub {
-    font-size: 6px;
+    font-size: .375rem;
   }
 
   .learning-constellation .lc-pointer {
     top: 16%;
-    font-size: 5px;
+    font-size: .3125rem;
   }
 
   .learning-constellation .lc-trace--lld .lc-node {
-    width: 68px;
+    width: 4.25rem;
   }
 
   .learning-constellation .lc-trace--lld .lc-node-face {
-    min-height: 58px;
+    min-height: 3.625rem;
   }
 
   .learning-constellation .lc-trace--lld .lc-node strong {
-    font-size: 9px;
-    letter-spacing: -.2px;
+    font-size: .5625rem;
+    letter-spacing: -.0125rem;
   }
 
   .learning-constellation .lc-route-note {
     top: 71%;
-    font-size: 5px;
+    font-size: .3125rem;
   }
 
   .learning-constellation .lc-contract-note {
     left: 33%;
-    font-size: 5px;
+    font-size: .3125rem;
   }
 
   .learning-constellation .lc-contract-note strong {
-    font-size: 4px;
+    font-size: .25rem;
   }
 
   .learning-constellation .lc-readout {
-    gap: 8px;
-    min-height: 68px;
-    padding: 11px 13px 8px;
+    gap: .5rem;
+    min-height: 4.25rem;
+    padding: .6875rem .8125rem .5rem;
   }
 
   .learning-constellation .lc-readout-marker {
-    height: 23px;
-    flex-basis: 23px;
-    font-size: 9px;
+    height: 1.4375rem;
+    flex-basis: 1.4375rem;
+    font-size: .5625rem;
   }
 
   .learning-constellation .lc-readout-copy strong {
-    font-size: 10px;
+    font-size: .625rem;
   }
 
   .learning-constellation .lc-readout-copy p {
-    margin-top: 3px;
-    font-size: 8px;
+    margin-top: .1875rem;
+    font-size: .5rem;
   }
 
   .learning-constellation .lc-console {
-    margin: 0 13px;
-    min-height: 25px;
+    margin: 0 .8125rem;
+    min-height: 1.5625rem;
   }
 
   .learning-constellation .lc-console code {
-    font-size: 7px;
+    font-size: .4375rem;
   }
 
   .learning-constellation .lc-console-state {
-    font-size: 5px;
+    font-size: .3125rem;
   }
 
   .learning-constellation .lc-actions {
     flex-wrap: wrap;
-    gap: 3px;
-    padding: 6px 10px 10px;
+    gap: .1875rem;
+    padding: .375rem .625rem .625rem;
   }
 
   .learning-constellation .lc-actions button {
-    min-height: 36px;
-    font-size: 9px;
+    min-height: 2.25rem;
+    font-size: .5625rem;
   }
 
   .learning-constellation .lc-actions .lc-run {
-    gap: 5px;
-    min-width: 111px;
-    padding: 8px;
+    gap: .3125rem;
+    min-width: 6.9375rem;
+    padding: .5rem;
   }
 
   .learning-constellation .lc-actions .lc-reset {
-    width: 33px;
-    flex-basis: 33px;
+    width: 2.0625rem;
+    flex-basis: 2.0625rem;
   }
 
   .learning-constellation .lc-actions .lc-open {
-    gap: 3px;
-    padding-right: 4px;
-    padding-left: 4px;
+    gap: .1875rem;
+    padding-right: .25rem;
+    padding-left: .25rem;
   }
 }
 
@@ -1025,16 +1025,16 @@
   .learning-constellation .lc-track-selector button,
   .learning-constellation .lc-options button,
   .learning-constellation .lc-actions button {
-    min-height: 44px;
+    min-height: 2.75rem;
   }
 
   .learning-constellation .lc-options button {
-    min-width: 40px;
+    min-width: 2.5rem;
   }
 
   .learning-constellation .lc-actions .lc-reset {
-    width: 44px;
-    flex-basis: 44px;
+    width: 2.75rem;
+    flex-basis: 2.75rem;
   }
 }
 

@@ -6,6 +6,13 @@ import { learningStages, lessonStatus, LessonSessionContext, useLearning, type L
 import { useStudioMotion } from './studio/StudioMotion'
 
 const stageIcons = { understand: BookOpen, predict: ScanEye, experiment: FlaskConical, explain: MessageCircle, apply: ArrowUpRight }
+const compactStageLabels: Record<LearningStage, string> = {
+  understand: 'Learn',
+  predict: 'Guess',
+  experiment: 'Try',
+  explain: 'Tell',
+  apply: 'Apply',
+}
 
 function Checkpoint({ check, onAnswer, passed }: { check: LearningCheck; onAnswer: (correct: boolean) => void; passed: boolean }) {
   const { motionEnabled } = useStudioMotion()
@@ -90,7 +97,7 @@ export function LearningWorkbench({ track, week, title, goal, understand, experi
           const Glyph = stageIcons[item]
           return <button key={item} aria-current={stage === item ? 'step' : undefined} onClick={() => chooseStage(item)}>
             {stage === item && <m.span className="stage-active-surface" layoutId={`${id}-active-stage`} aria-hidden="true" />}
-            <span className="stage-number">0{index + 1}</span><Glyph size={17} aria-hidden="true" /><span className="stage-label">{item}</span>
+            <span className="stage-number">0{index + 1}</span><Glyph size={17} aria-hidden="true" /><span className="stage-label" data-compact-label={compactStageLabels[item]}>{item}</span>
           </button>
         })}
       </nav>
