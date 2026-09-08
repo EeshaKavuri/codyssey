@@ -273,9 +273,9 @@ const theories = {
   },
 } satisfies Record<string, PatternTheory>
 
-type TheoryKey = keyof typeof theories
+export type PatternFamily = keyof typeof theories
 
-const blueprints: Record<TheoryKey, PatternBlueprint> = {
+const blueprints: Record<PatternFamily, PatternBlueprint> = {
   linkedList: {
     state: 'prev, current, next_node, and possibly a dummy node',
     template: ['current = head', 'while current:', '    next_node = current.next', '    # read or rewire current safely', '    prev, current = current, next_node', 'return new_head_or_answer'],
@@ -470,7 +470,7 @@ const blueprints: Record<TheoryKey, PatternBlueprint> = {
   },
 }
 
-const patternFamilies: Record<string, TheoryKey> = {
+const patternFamilies: Record<string, PatternFamily> = {
   'Doubly Linked Lists': 'linkedList',
   'Fast and Slow Pointer': 'fastSlow',
   'Linked List Fundamentals': 'linkedList',
@@ -539,4 +539,8 @@ export function getPatternTheory(pattern: string): PatternTheory {
 
 export function getPatternBlueprint(pattern: string): PatternBlueprint {
   return blueprints[patternFamilies[pattern] ?? 'fundamentals']
+}
+
+export function getPatternFamily(pattern: string): PatternFamily {
+  return patternFamilies[pattern] ?? 'fundamentals'
 }

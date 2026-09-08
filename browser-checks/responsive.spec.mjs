@@ -146,6 +146,24 @@ for (const track of ['dsa', 'hld', 'lld']) {
   })
 }
 
+test('every DSA week exposes visual anatomy and operation costs', async ({ page }) => {
+  await openRoute(page, 'dsa')
+  await openStage(page, 'understand')
+  for (let week = 1; week <= 12; week++) {
+    await page.getByLabel('Select course week').selectOption(String(week))
+    await expect(page.locator('.dsa-concept-visual')).toBeVisible()
+    await expect(page.locator('.dsa-concept-visual > header h3')).not.toHaveText('')
+    const operations = page.locator('.concept-operation-grid button')
+    expect(await operations.count()).toBeGreaterThanOrEqual(2)
+    await operations.last().click()
+    await expect(operations.last()).toHaveAttribute('aria-pressed', 'true')
+    for (const width of [280, 820]) {
+      await page.setViewportSize({ width, height: 700 })
+      expect(await fitIssues(page)).toEqual([])
+    }
+  }
+})
+
 test('mobile touch, rotation, and short-screen menus remain reachable', async ({ page, browserName }) => {
   test.skip(browserName === 'firefox', 'Playwright does not emulate mobile Firefox.')
   const context = await page.context().browser().newContext({
@@ -191,6 +209,22 @@ test('mobile touch, rotation, and short-screen menus remain reachable', async ({
   }
 })
 
+test('week one DSA patterns follow prerequisite order', async ({ page }) => {
+  await openRoute(page, 'dsa')
+  await page.getByLabel('Select course week').selectOption('1')
+  await page.getByRole('button', { name: 'Apply' }).click()
+  await expect(page.locator('.pattern-list button')).toHaveCount(7)
+  await expect(page.locator('.pattern-list button span')).toHaveText([
+    'Programming and Complexity Basics',
+    'Python Collections',
+    'Linked List Fundamentals',
+    'Fast and Slow Pointer',
+    'Linked List Merge and Transformation',
+    'Doubly Linked Lists',
+    'Linked List Pointer Rewiring',
+  ])
+})
+
 test('profile, notes, references, and walkthrough fit compact screens', async ({ page }) => {
   const problems = []
   for (const width of [240, 320, 390, 820, 1280]) {
@@ -211,28 +245,53 @@ test('profile, notes, references, and walkthrough fit compact screens', async ({
     }
     await page.getByRole('button', { name: 'Open website walkthrough', exact: true }).click()
     await page.locator('.coach-popup').waitFor()
-    for (let step = 0; step < 3; step++) {
+    const tourSteps = 12
+    for (let step = 0; step < tourSteps; step++) {
       const issues = await fitIssues(page)
       if (issues.length) problems.push({ width, overlay: `walkthrough ${step}`, issues })
       const popup = await page.locator('.coach-popup').boundingBox()
       expect(popup.y).toBeGreaterThanOrEqual(0)
       expect(popup.y + popup.height).toBeLessThanOrEqual(600)
-      if (step < 2) await page.locator('.coach-next').click()
+      if (step < tourSteps - 1) await page.locator('.coach-next').click()
     }
     await page.getByRole('button', { name: 'Close walkthrough', exact: true }).click()
   }
   expect(problems, JSON.stringify(problems)).toEqual([])
 })
 
+test('website walkthrough auto-opens once and remains manually available', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 1280, height: 720 } })
+  const firstVisit = await context.newPage()
+  await firstVisit.goto('/')
+  await firstVisit.locator('.coach-popup').waitFor()
+  await expect(firstVisit.locator('.coach-heading')).toContainText('1/12')
+  await firstVisit.getByRole('button', { name: 'Close walkthrough', exact: true }).click()
+  await firstVisit.reload()
+  await expect(firstVisit.locator('.coach-popup')).toHaveCount(0)
+  await firstVisit.getByRole('button', { name: 'Open website walkthrough', exact: true }).click()
+  await expect(firstVisit.locator('.coach-heading')).toContainText('1/12')
+  await context.close()
+})
+
 test('fixed shell survives wheel input and workspace fullscreen', async ({ page }) => {
   await openRoute(page, 'workspace')
   await page.locator('.workspace-shell').waitFor()
+  const originalBoard = await page.locator('.workspace-node').count()
+  await page.getByRole('button', { name: 'Add node' }).click()
+  await expect(page.locator('.workspace-node')).toHaveCount(originalBoard + 1)
+  await page.getByRole('button', { name: 'Undo', exact: true }).click()
+  await expect(page.locator('.workspace-node')).toHaveCount(originalBoard)
+  await page.getByRole('button', { name: 'Redo', exact: true }).click()
+  await expect(page.locator('.workspace-node')).toHaveCount(originalBoard + 1)
+  for (const name of ['Undo', 'Redo', 'Enter fullscreen']) {
+    await expect(page.getByRole('button', { name, exact: true })).toHaveText('')
+  }
   await page.mouse.move(1100, 400)
   await page.mouse.wheel(800, 500)
   expect(await fitIssues(page)).toEqual([])
   const supported = await page.evaluate(() => document.fullscreenEnabled)
   test.skip(!supported, 'This browser does not expose the element Fullscreen API.')
-  const originalBoard = await page.locator('.workspace-node').count()
+  const fullscreenBoard = await page.locator('.workspace-node').count()
   for (const width of [1280, 390, 280]) {
     await page.setViewportSize({ width, height: 600 })
     await page.getByRole('button', { name: 'Enter fullscreen', exact: true }).click()
@@ -243,7 +302,7 @@ test('fixed shell survives wheel input and workspace fullscreen', async ({ page 
     expect(box.y).toBe(0)
     expect(box.width).toBe(screen.width)
     expect(box.height).toBe(screen.height)
-    expect(await page.locator('.workspace-node').count()).toBe(originalBoard)
+    expect(await page.locator('.workspace-node').count()).toBe(fullscreenBoard)
     await page.getByRole('button', { name: 'Exit fullscreen', exact: true }).click()
     await expect.poll(() => page.evaluate(() => document.fullscreenElement === null)).toBe(true)
     expect(await fitIssues(page)).toEqual([])

@@ -10,6 +10,7 @@ export type DsaProblem = {
 export type DsaPattern = {
   name: string
   week: number
+  learningOrder?: number
   problems: DsaProblem[]
 }
 
@@ -17,6 +18,7 @@ export const dsaPatterns: DsaPattern[] = [
   {
     "name": "Doubly Linked Lists",
     "week": 1,
+    "learningOrder": 6,
     "problems": [
       {
         "title": "Introduction to DLL, learn about struct, and how is node represented",
@@ -41,6 +43,7 @@ export const dsaPatterns: DsaPattern[] = [
   {
     "name": "Fast and Slow Pointer",
     "week": 1,
+    "learningOrder": 4,
     "problems": [
       {
         "title": "Middle of a LinkedList [TortoiseHare Method]",
@@ -77,6 +80,7 @@ export const dsaPatterns: DsaPattern[] = [
   {
     "name": "Linked List Fundamentals",
     "week": 1,
+    "learningOrder": 3,
     "problems": [
       {
         "title": "Introduction to LinkedList, learn about struct, and how is node represented",
@@ -143,6 +147,7 @@ export const dsaPatterns: DsaPattern[] = [
   {
     "name": "Linked List Merge and Transformation",
     "week": 1,
+    "learningOrder": 5,
     "problems": [
       {
         "title": "Sort LL",
@@ -173,6 +178,7 @@ export const dsaPatterns: DsaPattern[] = [
   {
     "name": "Linked List Pointer Rewiring",
     "week": 1,
+    "learningOrder": 7,
     "problems": [
       {
         "title": "Delete a node in DLL",
@@ -233,6 +239,7 @@ export const dsaPatterns: DsaPattern[] = [
   {
     "name": "Programming and Complexity Basics",
     "week": 1,
+    "learningOrder": 1,
     "problems": [
       {
         "title": "User Input / Output",
@@ -299,6 +306,7 @@ export const dsaPatterns: DsaPattern[] = [
   {
     "name": "Python Collections",
     "week": 1,
+    "learningOrder": 2,
     "problems": [
       {
         "title": "C++ STL",

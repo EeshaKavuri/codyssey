@@ -559,9 +559,13 @@
 
 /* Spatial editor: never transition left/top, scale nodes, or change their port geometry. */
 .studio-shell .workspace-shell { container: spatial-studio / inline-size; }
-.studio-shell .workspace-shell .workspace-toolbar { flex-wrap: wrap; background: #141f17; border-radius: 1.0625rem 1.0625rem 0 0; }
-.studio-shell .workspace-shell :is(.workspace-modes, .workspace-actions) { min-width: 0; display: flex; flex-wrap: wrap; gap: .4375rem; }
+.studio-shell .workspace-shell .workspace-toolbar { width: 100%; min-width: 0; flex-wrap: wrap; background: #141f17; border-radius: 1.0625rem 1.0625rem 0 0; overflow: hidden; }
+.studio-shell .workspace-shell :is(.workspace-modes, .workspace-actions) { min-width: 0; max-width: 100%; display: flex; flex-wrap: wrap; gap: .4375rem; }
+.studio-shell .workspace-shell .workspace-modes { flex: 1 1 46rem; }
+.studio-shell .workspace-shell .workspace-actions { flex: 1 1 28rem; }
 .studio-shell .workspace-shell .workspace-toolbar button { min-height: 2.5rem; padding: .5rem .75rem; color: var(--lab-muted); background: var(--lab-panel); border-color: var(--color-control-border); font-size: .8125rem; font-weight: 600; line-height: 1.45; }
+.studio-shell .workspace-shell .workspace-toolbar .workspace-icon-button { flex: 0 0 2.5rem; width: 2.5rem; min-width: 2.5rem; padding: 0; }
+.studio-shell .workspace-shell .workspace-toolbar .workspace-icon-button svg { width: 1.125rem; height: 1.125rem; }
 .studio-shell .workspace-shell .workspace-toolbar button:hover:not(:disabled) { color: var(--lab-ink); background: #233027; border-color: #6b825b; }
 .studio-shell .workspace-shell .workspace-toolbar button.active { color: var(--color-on-accent); background: var(--lab-lime); border-color: var(--lab-lime); box-shadow: 0 0 1.25rem var(--color-accent-a07); }
 .studio-shell .workspace-shell .workspace-toolbar .clear-canvas-button { color: var(--lab-red); background: var(--lab-error-wash); border-color: #70414a; }
@@ -726,7 +730,8 @@
   .studio-shell .workspace-shell .workspace-inspector { border-right: 0; border-bottom: .0625rem solid var(--lab-line); }
   .studio-shell .workspace-shell .workspace-notes { grid-template-columns: minmax(0, 1fr); }
   .studio-shell .workspace-shell .workspace-modes button { flex: 1 1 5.625rem; }
-  .studio-shell .workspace-shell .workspace-actions button { flex: 1 1 6.875rem; }
+  .studio-shell .workspace-shell .workspace-actions button:not(.workspace-icon-button) { flex: 1 1 6.875rem; }
+  .studio-shell .workspace-shell .workspace-actions .workspace-icon-button { flex-basis: 2.5rem; }
 }
 
 @keyframes studio-lab-arrive {

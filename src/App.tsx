@@ -12,6 +12,7 @@ import { GuidedTour, type TourStep } from './components/GuidedTour'
 import { DesignFoundations } from './components/DesignFoundations'
 import { parseLearningState, useLearning, type LearningTrack } from './data/learningProgress'
 import { StudioAmbient, useStudioMotion } from './components/studio/StudioMotion'
+import { DsaConceptVisual } from './components/dsa/DsaConceptVisual'
 
 const DesignExploreMore = lazy(() => import('./components/DesignExploreMore'))
 const LearningWorkbench = lazy(() => import('./components/LearningWorkbench').then(module => ({ default: module.LearningWorkbench })))
@@ -384,9 +385,11 @@ function problemUrl(problem: DsaProblem): string {
 
 function useWeekPattern(week: number) {
   const { state, update } = useLearning()
-  const patterns = useMemo(() => dsaPatterns.filter((pattern) => pattern.week === week), [week])
+  const patterns = useMemo(() => dsaPatterns
+    .filter((pattern) => pattern.week === week)
+    .sort((left, right) => (left.learningOrder ?? Number.MAX_SAFE_INTEGER) - (right.learningOrder ?? Number.MAX_SAFE_INTEGER)), [week])
   const selected = state.lessons[`${week}:dsa`]?.selectedPattern
-  const activePattern = patterns.find(pattern => pattern.name === selected) ?? (week === 1 ? patterns.find(pattern => pattern.name === 'Linked List Fundamentals') : undefined) ?? patterns[0]
+  const activePattern = patterns.find(pattern => pattern.name === selected) ?? patterns[0]
   return { patterns, activePattern, setSelectedPattern: (selectedPattern: string) => update(`${week}:dsa`, { selectedPattern }) }
 }
 
@@ -408,6 +411,7 @@ function DsaTheoryExplorer({ week }: { week: number }) {
         <p>{theory.idea}</p>
         <div className="pattern-invariant"><span>CORE INVARIANT</span><strong>{theory.invariant}</strong></div>
       </div>
+      <DsaConceptVisual pattern={activePattern.name} />
       <details key={`${activePattern.name}:reasoning`}><summary>Recognition signals, steps, and common traps</summary><div className="theory-grid">
         <article><span>01 · RECOGNIZE IT</span><ul>{theory.recognize.map((item) => <li key={item}>{item}</li>)}</ul></article>
         <article><span>02 · SOLVE IT</span><ol>{theory.steps.map((item) => <li key={item}>{item}</li>)}</ol></article>
@@ -729,9 +733,18 @@ export default function App() {
     setView(track)
   }
   const websiteTourSteps = useMemo<TourStep[]>(() => [
-    { selector: '.session-launch .primary-button', title: 'Start with one idea', detail: 'Open a short learning loop. Predict, experiment, and explain instead of reading a whole page at once. Your place is saved.', action: () => setView('home') },
-    { selector: '.living-case-teaser button', title: 'Zoom through a living system', detail: 'Follow one booking problem from requests to objects to an expiration heap. Change a condition and see what breaks.' },
-    { selector: '.study-index', title: 'Explore at your own pace', detail: 'Every week and track stays open. Checkpoints measure reasoning; visits and playback clicks never count as mastery.' },
+    { selector: '.session-launch .primary-button', title: 'Begin from your next lesson', detail: 'The overview recommends the next useful lesson. Open it to enter a short, interactive learning loop; Codyssey saves your week, stage, notes, and progress.', action: () => setView('home') },
+    { selector: '#site-navigation', title: 'Use the three learning components', detail: 'DSA Lab builds coding patterns, System Design explores HLD trade-offs, and Object Design develops LLD and object modelling. The menu also opens your roadmap, visual workspace, living system, and source library.' },
+    { selector: '.week-switcher', title: 'Move through all 12 weeks', detail: 'Use the arrows for the adjacent week or open the week selector to jump anywhere. The selected week stays synchronized across DSA, HLD, and LLD.' },
+    { selector: '.nav-item[aria-label="DSA Lab"]', title: 'DSA: see the structure, then run it', detail: 'Start with the data structure and operation costs, predict the next state, animate the algorithm, explain the invariant, and finish with an interview-style application.', action: () => setView('home') },
+    { selector: '.nav-item[aria-label="System Design"]', title: 'HLD: reason about pressure and scale', detail: 'Explore architecture through concrete system pressure: traffic, storage, reliability, consistency, and failure. Change conditions in experiments and defend the trade-off you choose.' },
+    { selector: '.nav-item[aria-label="Object Design"]', title: 'LLD: turn behaviour into objects', detail: 'Model responsibilities, contracts, state, and collaboration. Interactive exercises make SOLID principles, patterns, concurrency, and extensibility visible instead of abstract.' },
+    { selector: '.nav-item[aria-label="Visual Workspace"]', title: 'Draw while you reason', detail: 'Open the Visual Workspace to sketch structures and architecture. Add and connect nodes, move ideas around, undo or redo edits, and enter fullscreen when you need more room.' },
+    { selector: '.nav-item[aria-label="12-week path"]', title: 'Navigate from the roadmap', detail: 'The roadmap gives the bird’s-eye view of every week and all three tracks. Open any module directly; nothing is calendar-locked, so review or skip ahead whenever it helps.' },
+    { selector: '.sidebar-collapse', title: 'Protect focus without losing navigation', detail: 'Collapse the menu during a lesson to reclaim space. This arrow remains available so you can reopen navigation at any time; on mobile, use More in the fixed bottom dock.' },
+    { selector: '.sidebar-card', title: 'Progress means demonstrated reasoning', detail: 'Each week has three checkpoints—DSA, HLD, and LLD. A checkpoint clears when you complete the reasoning loop, not merely because you visited a page or played an animation.' },
+    { selector: '.avatar', title: 'Resume or carry your progress', detail: 'Your profile shows learning progress and solved problems. You can name the profile and export or import a backup when moving between browsers or devices.' },
+    { selector: '.site-help-button', title: 'The guide will not interrupt you again', detail: 'This tour opens automatically only on your first visit. If you want a refresher later, use the Guide button; Motion beside it controls interface animation without changing the learning content.' },
   ], [setView])
   const renderModule = (module: ModuleId) => {
     if (module === 'dsa') {

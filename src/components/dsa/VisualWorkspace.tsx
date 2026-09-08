@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from 'react'
-import { Maximize2, Minimize2 } from 'lucide-react'
+import { Maximize2, Minimize2, Redo2, Undo2 } from 'lucide-react'
 import { storageKeys } from '../../data/storage'
 import './workspace-fullscreen.css'
 
@@ -212,6 +212,7 @@ export function VisualWorkspace() {
   const [pending, setPending] = useState<{ from: number; type: ConnectionType } | null>(null)
   const [message, setMessage] = useState('Select a node to edit it, or drag it anywhere on the canvas.')
   const [history, setHistory] = useState<{ mode: WorkspaceMode; board: Board }[]>([])
+  const [future, setFuture] = useState<{ mode: WorkspaceMode; board: Board }[]>([])
   const [fullscreen, setFullscreen] = useState(false)
   const [fullscreenBusy, setFullscreenBusy] = useState(false)
   const [fullscreenError, setFullscreenError] = useState('')
@@ -265,6 +266,7 @@ export function VisualWorkspace() {
   const updateBoard = (next: Board) => setBoards((current) => ({ ...current, [mode]: next }))
   const commit = (next: Board) => {
     remember()
+    setFuture([])
     updateBoard(next)
   }
 
@@ -425,12 +427,25 @@ export function VisualWorkspace() {
   const undo = () => {
     const previous = history.at(-1)
     if (!previous) return
+    setFuture((current) => [...current.slice(-39), { mode, board: cloneBoard(board) }])
     setBoards((current) => ({ ...current, [previous.mode]: cloneBoard(previous.board) }))
     setMode(previous.mode)
     setHistory((current) => current.slice(0, -1))
     setPending(null)
     setSelected(previous.board.nodes[0]?.id ?? null)
     setMessage('Undid the last workspace change.')
+  }
+
+  const redo = () => {
+    const next = future.at(-1)
+    if (!next) return
+    setHistory((current) => [...current.slice(-39), { mode, board: cloneBoard(board) }])
+    setBoards((current) => ({ ...current, [next.mode]: cloneBoard(next.board) }))
+    setMode(next.mode)
+    setFuture((current) => current.slice(0, -1))
+    setPending(null)
+    setSelected(next.board.nodes[0]?.id ?? null)
+    setMessage('Redid the last workspace change.')
   }
 
   const reset = () => {
@@ -537,12 +552,17 @@ export function VisualWorkspace() {
           </div>
           <div className="workspace-actions">
             <button onClick={addNode}>＋ Add {mode === 'array' ? 'cell' : 'node'}</button>
-            <button onClick={undo} disabled={!history.length}>↶ Undo</button>
+            <button className="workspace-icon-button" onClick={undo} disabled={!history.length} aria-label="Undo" title="Undo">
+              <Undo2 size={18} aria-hidden="true" />
+            </button>
+            <button className="workspace-icon-button" onClick={redo} disabled={!future.length} aria-label="Redo" title="Redo">
+              <Redo2 size={18} aria-hidden="true" />
+            </button>
             <button onClick={reset}>↻ Example</button>
             <button className="clear-canvas-button" onClick={clearCanvas} disabled={!board.nodes.length}>Clear canvas</button>
             <button
               type="button"
-              className="workspace-fullscreen-button"
+              className="workspace-fullscreen-button workspace-icon-button"
               onClick={toggleFullscreen}
               disabled={fullscreenBusy}
               aria-pressed={fullscreen}
@@ -550,7 +570,6 @@ export function VisualWorkspace() {
               title={fullscreen ? 'Exit fullscreen (Esc)' : 'Enter fullscreen'}
             >
               {fullscreen ? <Minimize2 size={16} aria-hidden="true" /> : <Maximize2 size={16} aria-hidden="true" />}
-              {fullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
             </button>
           </div>
           {fullscreenError && <div className="workspace-message workspace-fullscreen-error" role="alert">{fullscreenError}</div>}
